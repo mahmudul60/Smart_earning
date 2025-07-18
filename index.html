@@ -1,0 +1,1787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>World Work - Digital Ad Reward System</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #0a0a23;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow-x: hidden;
+      position: relative;
+      color: #e0e0e0;
+    }
+
+    #particles-js {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: linear-gradient(135deg, #1e1e3f, #2a2a5e);
+    }
+
+    .container {
+      width: 90%;
+      max-width: 480px;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(15px);
+      border-radius: 25px;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      z-index: 1;
+      animation: fadeIn 1.2s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .site-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .site-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: #00f7ff;
+      text-shadow: 0 0 12px #00f7ff, 0 0 24px #00f7ff;
+      animation: neonGlow 2.5s infinite alternate;
+      margin: 0;
+      letter-spacing: 4px;
+      line-height: 1.2;
+    }
+
+    @keyframes neonGlow {
+      0% { text-shadow: 0 0 6px #00f7ff, 0 0 12px #00f7ff; }
+      100% { text-shadow: 0 0 18px #00f7ff, 0 0 30px #00f7ff; }
+    }
+
+    @media (max-width: 600px) {
+      .site-title { font-size: 2.2rem; letter-spacing: 2px; }
+      .container { padding: 20px; max-width: 100%; }
+    }
+
+    .notice-section {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 20px 0;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      overflow: hidden;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
+    }
+
+    .notice-text {
+      font-size: 1rem;
+      color: #00ffcc;
+      text-shadow: 0 0 8px rgba(0, 255, 204, 0.7);
+      white-space: nowrap;
+      animation: scrollNotice 60s linear infinite;
+      line-height: 1.6;
+      display: inline-block;
+      padding-left: 100%;
+    }
+
+    @keyframes scrollNotice {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .notice-text:hover {
+      animation-play-state: paused;
+    }
+
+    .box {
+      margin-bottom: 25px;
+      padding: 25px;
+      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 6px 25px rgba(0, 0, 0, 0.25);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .box:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    .box h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.6rem;
+      color: #00f7ff;
+      text-shadow: 0 0 6px #00f7ff;
+      margin-bottom: 12px;
+    }
+
+    .box p {
+      font-size: 1rem;
+      color: #e0e0e0;
+      line-height: 1.6;
+    }
+
+    .user-info { text-align: center; }
+    .user-info .profile-picture {
+      width: 130px;
+      height: 130px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin: 20px auto;
+      border: 4px solid #00f7ff;
+      box-shadow: 0 0 20px #00f7ff;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+    }
+
+    .user-info .profile-picture:hover {
+      transform: scale(1.12);
+      box-shadow: 0 0 30px #00f7ff;
+    }
+
+    .user-info .user-id,
+    .user-info p {
+      color: #00ffcc;
+      font-weight: 500;
+      font-size: 1.1rem;
+      margin: 8px 0;
+    }
+
+    .stats { text-align: center; }
+    .progress-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 50%;
+      background: conic-gradient(#00f7ff 0% 0%, #ff00cc 0% 100%);
+      margin: 25px auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 0 20px rgba(0, 247, 255, 0.6);
+      position: relative;
+      animation: rotateGlow 10s linear infinite;
+    }
+
+    @keyframes rotateGlow {
+      0% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.6), 0 0 30px rgba(255, 0, 204, 0.5); }
+      50% { box-shadow: 0 0 30px rgba(0, 247, 255, 0.8), 0 0 40px rgba(255, 0, 204, 0.7); }
+      100% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.6), 0 0 30px rgba(255, 0, 204, 0.5); }
+    }
+
+    .progress-circle::before {
+      content: '';
+      position: absolute;
+      width: 90px;
+      height: 90px;
+      background: rgba(10, 10, 35, 0.95);
+      border-radius: 50%;
+    }
+
+    .progress-circle span {
+      position: relative;
+      color: #00f7ff;
+      font-size: 1.3rem;
+      font-weight: 700;
+      text-shadow: 0 0 6px #00f7ff;
+    }
+
+    .buttons button,
+    .user-info .upload-btn,
+    .user-info .edit-name-btn,
+    .btn-copy,
+    .all-menu-btn,
+    .btn-logout,
+    .modal-content button,
+    .program-item button,
+    #monthly-salary-modal .salary-item button,
+    .btn-learn-more {
+      position: relative;
+      padding: 14px 24px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      color: #fff;
+      background: linear-gradient(135deg, #00f7ff, #ff00cc);
+      box-shadow: 0 0 12px rgba(0, 247, 255, 0.6);
+      transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+      overflow: hidden;
+      z-index: 1;
+      animation: pulseGlow 3s infinite;
+    }
+
+    @keyframes pulseGlow {
+      0% { box-shadow: 0 0 12px rgba(0, 247, 255, 0.6); }
+      50% { box-shadow: 0 0 20px rgba(0, 247, 255, 0.8); }
+      100% { box-shadow: 0 0 12px rgba(0, 247, 255, 0.6); }
+    }
+
+    .buttons button::before,
+    .user-info .upload-btn::before,
+    .user-info .edit-name-btn::before,
+    .btn-copy::before,
+    .all-menu-btn::before,
+    .btn-logout::before,
+    .modal-content button::before,
+    .program-item button::before,
+    #monthly-salary-modal .salary-item button::before,
+    .btn-learn-more::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 200%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .buttons button:hover::before,
+    .user-info .upload-btn:hover::before,
+    .user-info .edit-name-btn:hover::before,
+    .btn-copy:hover::before,
+    .all-menu-btn:hover::before,
+    .btn-logout:hover::before,
+    .modal-content button:hover::before,
+    .program-item button:hover::before,
+    #monthly-salary-modal .salary-item button:hover::before,
+    .btn-learn-more:hover::before {
+      left: 100%;
+    }
+
+    .buttons button:hover,
+    .user-info .upload-btn:hover,
+    .user-info .edit-name-btn:hover,
+    .btn-copy:hover,
+    .all-menu-btn:hover,
+    .btn-logout:hover,
+    .modal-content button:hover,
+    .program-item button:hover,
+    #monthly-salary-modal .salary-item button:hover,
+    .btn-learn-more:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(0, 247, 255, 0.8);
+    }
+
+    .buttons button:active,
+    .user-info .upload-btn:active,
+    .user-info .edit-name-btn:active,
+    .btn-copy:active,
+    .all-menu-btn:active,
+    .btn-logout:active,
+    .modal-content button:active,
+    .program-item button:active,
+    #monthly-salary-modal .salary-item button:active,
+    .btn-learn-more:active {
+      transform: translateY(0);
+      box-shadow: 0 0 12px rgba(0, 247, 255, 0.6);
+    }
+
+    .buttons button:disabled,
+    .program-item button:disabled,
+    #monthly-salary-modal .salary-item button:disabled {
+      background: #666;
+      cursor: not-allowed;
+      box-shadow: none;
+      color: #999;
+      animation: none;
+    }
+
+    .btn-start-game { background: linear-gradient(135deg, #00f7ff, #ff00cc); }
+    .btn-withdraw { background: linear-gradient(135deg, #00ff85, #0288d1); }
+    .btn-leaderboard { background: linear-gradient(135deg, #e040fb, #7c4dff); }
+    .btn-deposit { background: linear-gradient(135deg, #00ffcc, #0288d1); }
+    .btn-balance { background: linear-gradient(135deg, #ffd700, #ff4081); }
+    .btn-my-job { background: linear-gradient(135deg, #ff007a, #ff9100); }
+    .btn-monthly-salary { background: linear-gradient(135deg, #ffd740, #ff1744); }
+    .btn-recharge { background: linear-gradient(135deg, #ff3d00, #ff9100); }
+    .btn-admin-contact { background: linear-gradient(135deg, #00e676, #3f51b5); }
+    .btn-copy { background: linear-gradient(135deg, #00e1ff, #00c853); }
+    .btn-logout { background: linear-gradient(135deg, #ff1744, #d81b60); }
+    .upload-btn, .edit-name-btn { background: linear-gradient(135deg, #00e5ff, #00b0ff); }
+    .btn-submit, .btn-confirm { background: linear-gradient(135deg, #7c4dff, #00e676); }
+    .btn-close, .btn-cancel { background: linear-gradient(135deg, #ff3d00, #c51162); }
+    .btn-copy-number { background: linear-gradient(135deg, #00ff8d, #0288d1); }
+    .btn-normal-job { background: linear-gradient(135deg, #00ff8d, #0288d1); }
+    .btn-hard-job { background: linear-gradient(135deg, #ff6e40, #d81b60); }
+    .btn-lottery { background: linear-gradient(135deg, #e040fb, #00e5ff); }
+    .btn-fast-work { background: linear-gradient(135deg, #00b0ff, #00f7ff); }
+    .btn-future-job { background: linear-gradient(135deg, #ff9100, #ff4081); }
+    .btn-learn-more { background: linear-gradient(135deg, #ffd740, #ff1744); }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      backdrop-filter: blur(15px);
+      border-radius: 18px;
+      padding: 25px;
+      max-width: 420px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #e0e0e0;
+      animation: modalPop 0.4s ease;
+    }
+
+    #fast-work-modal .modal-content,
+    #future-work-modal .modal-content,
+    #monthly-salary-modal .modal-content,
+    #recharge-modal .modal-content {
+      max-width: 620px;
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    @keyframes modalPop {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-content h2 {
+      font-family: 'Orbitron', sans-serif;
+      color: #00f7ff;
+      text-shadow: 0 0 6px #00f7ff;
+      font-size: 1.8rem;
+      margin-bottom: 15px;
+    }
+
+    .modal-content input,
+    .modal-content select {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 1.1rem;
+      transition: border-color 0.3s ease;
+    }
+
+    .modal-content input:focus,
+    .modal-content select:focus {
+      border-color: #00f7ff;
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0.5);
+    }
+
+    .modal-content .close-modal {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      font-size: 1.4rem;
+      color: #fff;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    .modal-content .close-modal:hover {
+      color: #ff00cc;
+    }
+
+    .modal-content .status {
+      font-size: 1rem;
+      color: #ff1744;
+      margin-top: 10px;
+    }
+
+    .deposit-number-section p {
+      color: #00ffcc;
+      font-weight: bold;
+      font-size: 1.1rem;
+      margin: 12px 0;
+    }
+
+    #balance-modal .modal-content p {
+      font-size: 1.1rem;
+      margin: 18px 0;
+    }
+
+    #balance-modal .modal-content p span {
+      font-weight: bold;
+      color: #00ffcc;
+    }
+
+    .program-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 420px;
+      overflow-y: auto;
+    }
+
+    .program-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: transform 0.3s ease;
+    }
+
+    .program-item:hover {
+      transform: translateY(-3px);
+    }
+
+    .program-item span {
+      color: #e0e0e0;
+      font-size: 1.1rem;
+    }
+
+    .program-item span::before {
+      content: '💰 ';
+    }
+
+    #purchase-modal .modal-content p {
+      font-size: 1rem;
+      margin: 12px 0;
+    }
+
+    #purchase-modal .modal-content #generation-income {
+      margin-top: 18px;
+    }
+
+    #purchase-modal .modal-content #generation-income p {
+      font-size: 1rem;
+      color: #00ffcc;
+    }
+
+    #leaderboard-modal .modal-content ul {
+      list-style: none;
+      padding: 0;
+      margin: 25px 0;
+    }
+
+    #leaderboard-modal .modal-content ul li {
+      background: rgba(255, 255, 255, 0.08);
+      margin: 12px 0;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      color: #e0e0e0;
+    }
+
+    .refer-link-section { text-align: center; }
+    .refer-link-box {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      margin-bottom: 12px;
+    }
+
+    .refer-link-box h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #00f7ff;
+      font-size: 1.3rem;
+      text-shadow: 0 0 6px #00f7ff;
+      margin-bottom: 12px;
+    }
+
+    .refer-link-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .refer-link-input {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      box-shadow: 0 0 12px rgba(0, 247, 255, 0.4);
+      transition: box-shadow 0.3s ease;
+      font-size: 1rem;
+    }
+
+    .refer-link-input:hover,
+    .refer-link-input:focus {
+      box-shadow: 0 0 18px rgba(0, 247, 255, 0.6);
+    }
+
+    .refer-link-note {
+      font-size: 0.85rem;
+      color: #00ffcc;
+      text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
+      margin-top: 10px;
+    }
+
+    .all-menu-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 25px;
+      padding: 14px;
+      font-size: 1.2rem;
+    }
+
+    .hamburger {
+      display: inline-block;
+      width: 22px;
+      height: 16px;
+      margin-right: 12px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 2.5px;
+      background: #00f7ff;
+      margin: 3.5px 0;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 6px #00f7ff;
+    }
+
+    #all-menu-modal .modal-content {
+      background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.7));
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .admin-contact-message {
+      font-size: 0.9rem;
+      color: #00ffcc;
+      text-shadow: 0 0 6px rgba(0, 255, 204, 0.6);
+      margin-top: 15px;
+    }
+
+    #edit-name-modal .modal-content input {
+      width: 100%;
+      padding: 12px;
+      margin: 12px 0;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+      font-size: 1.1rem;
+    }
+
+    #monthly-salary-modal .salary-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 12px;
+      border-radius: 10px;
+      margin: 12px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    #monthly-salary-modal .salary-item p {
+      margin: 6px 0;
+      font-size: 1rem;
+      color: #e0e0e0;
+    }
+
+    #monthly-salary-modal .countdown {
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #00ffcc;
+      margin: 12px 0;
+    }
+
+    #monthly-salary-modal .total-claimed {
+      font-size: 1.1rem;
+      color: #e0e0e0;
+      margin-top: 12px;
+    }
+
+    .user-info input[type="file"] { display: none; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 15px;
+      text-align: center;
+    }
+
+    .stat-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .stat-item h3 {
+      font-family: 'Orbitron', sans-serif;
+      color: #00f7ff;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .testimonial-carousel {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .testimonial-item {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 15px;
+      border-radius: 10px;
+      margin: 10px 0;
+      text-align: center;
+      animation: slideTestimonial 10s infinite;
+    }
+
+    @keyframes slideTestimonial {
+      0%, 20% { transform: translateY(0); opacity: 1; }
+      25%, 45% { transform: translateY(-100%); opacity: 0; }
+      50%, 70% { transform: translateY(100%); opacity: 0; }
+      75%, 100% { transform: translateY(0); opacity: 1; }
+    }
+
+    .live-stats {
+      text-align: center;
+    }
+
+    .live-stats p {
+      font-size: 1.1rem;
+      margin: 10px 0;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      margin-top: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 10px;
+    }
+
+    .footer-links a {
+      color: #00ffcc;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: #00f7ff;
+    }
+
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #00f7ff;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0, 247, 255, 0.6);
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ff00cc;
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="container">
+    <header class="site-header">
+      <h1 class="site-title">World Work</h1>
+      <div class="notice-section">
+        <span class="notice-text">
+          Welcome to World Work, Bangladesh's leading digital earning platform. Experience unparalleled income opportunities with our unique four-generation system. Join us today!
+        </span>
+      </div>
+    </header>
+
+    <button class="all-menu-btn" onclick="toggleAllMenu()">
+      <div class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      All Menu
+    </button>
+
+    <div class="box user-info">
+      <img id="profile-picture" class="profile-picture" src="https://via.placeholder.com/130" alt="Profile Picture" />
+      <label for="profile-upload" class="upload-btn">Upload Picture</label>
+      <input type="file" id="profile-upload" accept="image/*" onchange="uploadProfilePicture(event)" />
+      <button class="edit-name-btn" onclick="showEditNameModal()">Edit Name</button>
+      <h2>User Info</h2>
+      <p class="user-id">User ID: <span id="user-id">10001</span></p>
+      <p>Welcome, <span id="user-name">Guest</span></p>
+    </div>
+
+    <div class="box dashboard">
+      <h2>Quick Stats</h2>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>Balance</h3>
+          <p><span id="dashboard-balance">0.00</span> ৳</p>
+        </div>
+        <div class="stat-item">
+          <h3>Referrals</h3>
+          <p><span id="dashboard-referrals">0</span></p>
+        </div>
+        <div class="stat-item">
+          <h3>Tasks Completed</h3>
+          <p><span id="dashboard-tasks">0</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box stats">
+      <h2>Your Progress</h2>
+      <p>Watched Ads: <span id="watched-ads">0</span></p>
+      <div class="progress-circle">
+        <span id="progress-percentage">0%</span>
+      </div>
+    </div>
+
+    <div class="box testimonials">
+      <h2>Success Stories</h2>
+      <div class="testimonial-carousel">
+        <div class="testimonial-item">
+          <p>"World Work changed my life! I earned 5000 Taka in just one month!"</p>
+          <p>- Rahim, Dhaka</p>
+        </div>
+        <div class="testimonial-item">
+          <p>"The easiest way to earn online! Highly recommended!"</p>
+          <p>- Ayesha, Chittagong</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="box refer-link-section">
+      <div class="refer-link-box">
+        <h3>🎉 Invite Friends with Your Referral Link</h3>
+        <div class="refer-link-container">
+          <input type="text" id="refer-link" class="refer-link-input" readonly>
+          <button class="btn-copy" onclick="copyReferLink()">Copy</button>
+        </div>
+        <p class="refer-link-note">Share your referral link to invite friends to World Work!</p>
+      </div>
+    </div>
+
+    <div class="box live-stats">
+      <h2>Live Stats</h2>
+      <p>Total Users: <span id="total-users">0</span></p>
+      <p>Total Earnings: <span id="total-earnings">0 Taka</span></p>
+    </div>
+
+    <button class="btn-logout" onclick="logout()">Log Out</button>
+
+    <footer class="footer">
+      <p>© 2025 World Work. All rights reserved.</p>
+      <div class="footer-links">
+        <a href="/about">About Us</a>
+        <a href="/terms">Terms & Conditions</a>
+        <a href="/privacy">Privacy Policy</a>
+        <a href="/contact">Contact Us</a>
+      </div>
+    </footer>
+  </div>
+
+  <div id="all-menu-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="toggleAllMenu()">×</button>
+      <h2>All Menu</h2>
+      <div class="menu-buttons">
+        <button class="btn-start-game" onclick="startGame()">START Game</button>
+        <button class="btn-admin-contact" onclick="contactAdmin()">Admin Contact</button>
+        <button class="btn-withdraw" onclick="showWithdraw()">Withdraw</button>
+        <button class="btn-leaderboard" onclick="showLeaderboard()">Leaderboard</button>
+        <button class="btn-deposit" onclick="showDeposit()">Deposit</button>
+        <button class="btn-balance" onclick="showBalance()">My Balance</button>
+        <button class="btn-my-job" onclick="showMyJob()">My Job</button>
+        <button class="btn-monthly-salary" onclick="showMonthlySalary()">Monthly Salary</button>
+        <button class="btn-recharge" onclick="showRecharge()">Recharge</button>
+      </div>
+      <p class="admin-contact-message">Contact us for any support or queries.</p>
+    </div>
+  </div>
+
+  <div id="edit-name-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeEditNameModal()">×</button>
+      <h2>Edit Your Name</h2>
+      <input type="text" id="name-input" placeholder="Enter your name" maxlength="20" />
+      <button class="btn-submit" onclick="saveName()">Save</button>
+      <button class="btn-close" onclick="closeEditNameModal()">Close</button>
+      <p id="name-status" class="status"></p>
+    </div>
+  </div>
+
+  <div id="withdraw-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeWithdraw()">×</button>
+      <h2>💸 Withdraw Funds</h2>
+      <p>Minimum withdraw: <b>40 ৳</b></p>
+      <p>📱 Enter your mobile number:</p>
+      <input type="number" id="withdraw-number" placeholder="Enter Mobile Number" />
+      <p>💰 Enter the amount to withdraw:</p>
+      <input type="number" id="withdraw-amount" placeholder="Enter Amount" />
+      <p>📋 Select Withdraw Method:</p>
+      <select id="withdraw-method">
+        <option value="bkash">Bkash</option>
+        <option value="nagad">Nagad</option>
+        <option value="rocket">Rocket</option>
+      </select>
+      <button class="btn-submit" onclick="withdraw()">✅ Submit</button>
+      <button class="btn-close" onclick="closeWithdraw()">❌ Close</button>
+      <p id="withdraw-status" class="status"></p>
+    </div>
+  </div>
+<!-- Deposit Modal -->
+<div id="deposit-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeDeposit()">×</button>
+    <h2>💰 Deposit Funds</h2>
+    <p>Minimum deposit: <b>100 Taka</b></p>
+    <div class="deposit-number-section">
+      <p>Send money to: <b>01972470256</b></p>
+      <button class="btn-copy-number" onclick="copyDepositNumber()">Copy Number</button>
+    </div>
+    <p>📱 Enter your mobile number:</p>
+    <input type="number" id="deposit-mobile-number" placeholder="Enter Your Mobile Number" />
+    <p>💸 Enter the amount deposited:</p>
+    <input type="number" id="deposit-amount" placeholder="Enter Amount" />
+    <p>📋 Enter Transaction ID:</p>
+    <input type="text" id="deposit-transaction-id" placeholder="Enter Transaction ID" />
+    <p>📋 Select Payment Method:</p>
+    <select id="deposit-method">
+      <option value="bkash">Bkash</option>
+      <option value="nagad">Nagad</option>
+      <option value="rocket">Rocket</option>
+    </select>
+    <button class="btn-submit" onclick="initiateDeposit()">✅ Submit Deposit</button>
+    <button class="btn-close" onclick="closeDeposit()">❌ Close</button>
+    <p id="deposit-status" class="status"></p>
+  </div>
+</div>
+
+<!-- Recharge Modal -->
+<div id="recharge-modal" class="modal">
+  <div class="modal-content">
+    <button class="close-modal" onclick="closeRecharge()">×</button>
+    <h2>📱 Recharge Balance</h2>
+    <p>Minimum recharge: <b>20 Taka</b></p>
+    <div class="deposit-number-section">
+      <p>Send money to: <b>0197247027027</b></p>
+      <button class="btn-copy-number" onclick="copyDepositNumber()">Copy Number</button>
+    </div>
+    <p>📱 Enter mobile number:</p>
+    <input type="number" id="recharge-mobile-number" placeholder="Enter Mobile Number" />
+    <p>💰 Enter recharge amount:</p>
+    <input type="number" id="recharge-amount" placeholder="Enter Amount" />
+    <p>📋 Enter Transaction ID:</p>
+    <input type="text" id="recharge-transaction-id" placeholder="Enter Transaction ID" />
+    <p>📋 Select Recharge Method:</p>
+    <select id="recharge-method">
+      <option value="bkash">Bkash</option>
+      <option value="nagad">Nagad</option>
+      <option value="rocket">Rocket</option>
+    </select>
+    <button class="btn-submit" onclick="initiateRecharge()">✅ Submit Recharge</button>
+    <button class="btn-close" onclick="closeRecharge()">❌ Close</button>
+    <p id="recharge-status" class="status"></p>
+  </div>
+</div>
+
+  <div id="recharge-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeRecharge()">×</button>
+      <h2>📱 Recharge Balance</h2>
+      <p>Minimum recharge: <b>20 Taka</b></p>
+      <p>📱 Enter mobile number:</p>
+      <input type="number" id="recharge-mobile-number" placeholder="Enter Mobile Number" />
+      <p>💰 Enter recharge amount:</p>
+      <input type="number" id="recharge-amount" placeholder="Enter Amount" />
+      <p>📋 Select Recharge Method:</p>
+      <select id="recharge-method">
+        <option value="bkash">Bkash</option>
+        <option value="nagad">Nagad</option>
+        <option value="google-pay">Google Pay</option>
+        <option value="upi">UPI</option>
+      </select>
+      <button class="btn-submit" onclick="initiateRecharge()">✅ Pay Now</button>
+      <button class="btn-close" onclick="closeRecharge()">❌ Close</button>
+      <p id="recharge-status" class="status"></p>
+    </div>
+  </div>
+
+  <div id="balance-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeBalance()">×</button>
+      <h2>💰 My Balance</h2>
+      <p>Current Balance: <span id="current-balance">0.00</span> ৳</p>
+      <p>Total Income: <span id="total-income">0.00</span> ৳</p>
+      <button class="btn-close" onclick="closeBalance()">❌ Close</button>
+    </div>
+  </div>
+
+  <div id="my-job-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeMyJob()">×</button>
+      <h2>💼 My Job</h2>
+      <p>Select a job type:</p>
+      <div class="job-buttons">
+        <button class="btn-normal-job" onclick="selectNormalJob()">👉 Normal Job</button>
+        <button class="btn-hard-job" onclick="selectHardJob()">👉 Hard Job</button>
+        <button class="btn-lottery" onclick="selectLottery()">👉 Lottery</button>
+      </div>
+      <button class="btn-close" onclick="closeMyJob()">❌ Close</button>
+    </div>
+  </div>
+
+  <div id="normal-job-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeNormalJob()">×</button>
+      <h2>💼 Normal Job Options</h2>
+      <p>Select a job type:</p>
+      <div class="job-buttons">
+        <button class="btn" onclick="selectFastWork()">👉 Fast Work</button>
+        <button class="btn-future-job" onclick="selectFutureJob()">👉 Future Job</button>
+      </div>
+      <button class="btn-close" onclick="closeNormalJob()">❌ Close</button>
+    </div>
+  </div>
+
+  <div id="fast-work-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeFastWorkModal()">×</button>
+      <h2>💼 Fast Work Programs</h2>
+      <div class="fast-work-modal" id="fast-work-programs"></div>
+      <button class="modal" onclick="closeFastWorkModal()">❌ Close</button>
+    </div>
+  </div>
+
+  <div id="future-work-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeFutureWorkModal()">×</button>
+      <h2>💼 Future Work Programs</h2>
+      <div class="modal" id="future-work-programs"></div>
+      <button class="btn-close" onclick="closeFutureWorkModal()">❌ Close</button>
+    </div>
+  </div>
+
+  <div id="purchase-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closePurchaseModal()">×</button>
+      <h2>💳 Payment</h2>
+      <p>Program: <span id="purchase-program"></span></p>
+      <p>Price: <span id="purchase-price"></span> Taka</p>
+      <p>Balance: <span id="purchase-balance">0.00</span> ৳</p>
+      <button class="btn-confirm" onclick="confirmPurchase()">Confirm</button>
+      <button class="btn-cancel" onclick="closePurchaseModal()">Cancel</button>
+      <p id="purchase-status" class="status"></p>
+      <div id="generation-income">
+        <h3>Generation Income</h3>
+        <p>Generation 1 (10%): <span id="gen1-income"></span> Taka</p>
+        <p>Generation 2 (7%): <span id="gen2-income"></span> Taka</p>
+        <p>Generation 3 (5%): <span id="gen3-income"></span> Taka</p>
+        <p>Generation 4 (2%): <span id="gen4-income"></span> Taka</p>
+      </div>
+    </div>
+  </div>
+
+  <div id="leaderboard-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeLeaderboard()">×</button>
+      <h2>Leaderboard</h2>
+      <ul id="leaderboard-list">
+        <li>Fast - 1500000 ৳</li>
+        <li>Second - 1200000 ৳</li>
+        <li>Third - 1000000 ৳</li>
+      </ul>
+      <button class="btn-close" onclick="closeLeaderboard()">Close</button>
+    </div>
+  </div>
+
+  <div id="monthly-salary-modal" class="modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="closeMonthlySalary()">×</button>
+      <h2>💸 Monthly Salary</h2>
+      <div id="salary-list"></div>
+      <p id="countdown-timer" class="countdown">Next Salary: Not Activated</p>
+      <p class="total-claimed">Total Claimed Salary: <span id="total-claimed-salary">0.00</span> Taka</p>
+      <button class="btn-close" onclick="closeMonthlySalary()">❌ Close</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+  <script>
+    particlesJS('particles-js', {
+      particles: {
+        number: { value: 80, density: { enable: true, value_area: 800 } },
+        color: { value: '#00f7ff' },
+        shape: { type: 'circle' },
+        opacity: { value: 0.5, random: true },
+        size: { value: 3, random: true },
+        line_linked: { enable: true, distance: 150, color: '#00f7ff', opacity: 0.4, width: 1 },
+        move: { enable: true, speed: 2, direction: 'none', random: false }
+      },
+      interactivity: {
+        detect_on: 'canvas',
+        events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: true, mode: 'push' } },
+        modes: { grab: { distance: 200, line_linked: { opacity: 1 } }, push: { particles_nb: 4 } }
+      },
+      retina_detect: true
+    });
+
+    // Initialize state
+    let watchedAds = parseInt(localStorage.getItem('watchedAds')) || 0;
+    let balance = parseFloat(localStorage.getItem('balance')) || 0;
+    let totalIncome = parseFloat(localStorage.getItem('totalIncome')) || 0;
+    let lastDepositAmount = parseFloat(localStorage.getItem('lastDepositAmount')) || 0;
+    let lastDepositMethod = localStorage.getItem('lastDepositMethod') || '';
+    let lastDepositMobile = localStorage.getItem('lastDepositMobile') || '';
+    const userId = parseInt(localStorage.getItem('userId')) || 10001;
+    let userName = localStorage.getItem('userName') || 'Guest';
+    let directReferrals = parseInt(localStorage.getItem('directReferrals')) || 0;
+    let teamSize = parseInt(localStorage.getItem('teamSize')) || 0;
+    let tasksCompleted = parseInt(localStorage.getItem('tasksCompleted')) || 0;
+    let totalUsers = parseInt(localStorage.getItem('totalUsers')) || 0;
+    let totalEarnings = parseFloat(localStorage.getItem('totalEarnings')) || 0;
+    let pendingTransactions = JSON.parse(localStorage.getItem('pendingTransactions')) || [];
+    const programPrices = [70, 120, 200, 500, 1000, 2000, 4000, 8000, 10000, 14500];
+    let fastWorkPurchased = JSON.parse(localStorage.getItem('fastWorkPurchasedPrograms')) || [];
+    let futureWorkPurchased = JSON.parse(localStorage.getItem('futureWorkPurchasedPrograms')) || [];
+    let activeSalaryTier = parseInt(localStorage.getItem('activeSalaryTier')) || 0;
+    let salaryActivationTime = parseInt(localStorage.getItem('salaryActivationTime')) || 0;
+    let totalClaimedSalary = parseFloat(localStorage.getItem('totalClaimedSalary')) || 0;
+    let hasClaimedThisCycle = JSON.parse(localStorage.getItem('hasClaimedThisCycle')) || false;
+
+    const salaryTiers = [
+      { percentage: 10, directReferrals: 10, teamSize: 120, fastWorkRequired: 3, futureWorkRequired: 3 },
+      { percentage: 15, directReferrals: 30, teamSize: 300, fastWorkRequired: 5, futureWorkRequired: 5 },
+      { percentage: 20, directReferrals: 50, teamSize: 1000, fastWorkRequired: 8, futureWorkRequired: 8 },
+      { percentage: 25, directReferrals: 100, teamSize: 5000, fastWorkRequired: 10, futureWorkRequired: 10 }
+    ];
+
+    const referralChain = [
+      { userId: 10002, username: '@user2' },
+      { userId: 10003, username: '@user3' },
+      { userId: 10004, username: '@user4' },
+      { userId: 10005, username: '@user5' }
+    ];
+
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('userName', userName);
+    localStorage.setItem('balance', balance);
+
+    const savedProfilePicture = localStorage.getItem('profilePicture');
+    if (savedProfilePicture) {
+      document.getElementById('profile-picture').src = savedProfilePicture;
+    }
+
+    function initializeReferLink() {
+      const referLink = `https://worldwork.kesug.com/?ref=${userId}`;
+      document.getElementById('refer-link').value = referLink;
+    }
+
+    function updateUI() {
+      document.getElementById('user-id').textContent = userId;
+      document.getElementById('user-name').textContent = userName;
+      document.getElementById('dashboard-balance').textContent = balance.toFixed(2);
+      document.getElementById('dashboard-referrals').textContent = directReferrals;
+      document.getElementById('dashboard-tasks').textContent = tasksCompleted;
+      document.getElementById('watched-ads').textContent = watchedAds;
+      document.getElementById('progress-percentage').textContent = `${Math.min(watchedAds * 10, 100)}%`;
+      document.getElementById('total-users').textContent = totalUsers;
+      document.getElementById('total-earnings').textContent = totalEarnings.toFixed(2);
+      document.getElementById('current-balance').textContent = balance.toFixed(2);
+      document.getElementById('total-income').textContent = totalIncome.toFixed(2);
+    }
+
+    function toggleAllMenu() {
+      const modal = document.getElementById('all-menu-modal');
+      modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+    }
+
+    function contactAdmin() {
+      alert('Contacting admin via email: sabbirasdf088@gmail.com');
+      window.location.href = 'mailto:sabbirasdf088@gmail.com?subject=Support%20Request&body=Please%20describe%20your%20issue%20or%20query%20here.';
+    }
+
+    function showWithdraw() {
+      document.getElementById('withdraw-modal').style.display = 'flex';
+      document.getElementById('withdraw-status').textContent = '';
+      toggleAllMenu();
+    }
+
+    function closeWithdraw() {
+      document.getElementById('withdraw-modal').style.display = 'none';
+    }
+
+    async function withdraw() {
+      const mobileNumber = document.getElementById('withdraw-number').value;
+      const withdrawAmount = parseFloat(document.getElementById('withdraw-amount').value);
+      const method = document.getElementById('withdraw-method').value;
+
+      if (withdrawAmount < 40) {
+        document.getElementById('withdraw-status').textContent = '❌ Minimum withdrawal amount is 40 ৳.';
+        return;
+      }
+      if (!mobileNumber || !withdrawAmount) {
+        document.getElementById('withdraw-status').textContent = '❌ Please fill in all fields.';
+        return;
+      }
+      if (balance < withdrawAmount) {
+        document.getElementById('withdraw-status').textContent = '❌ Insufficient balance.';
+        return;
+      }
+
+      const transactionId = `TXN${Date.now()}_${userId}`;
+      const transaction = {
+        type: 'withdraw',
+        userId,
+        mobileNumber,
+        amount: withdrawAmount,
+        method,
+        status: 'pending',
+        transactionId,
+        timestamp: Date.now()
+      };
+
+      pendingTransactions.push(transaction);
+      localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
+
+      try {
+        await mockSendEmail({
+          to: 'sabbirasdf088@gmail.com',
+          subject: `Withdraw Request from User ${userId}`,
+          body: `User ${userId} (${userName}) requested a withdrawal of ${withdrawAmount} ৳ via ${method}. Mobile: ${mobileNumber}. Transaction ID: ${transactionId}. <br><br><a href="https://your-backend.com/api/confirm?transactionId=${transactionId}&type=withdraw">Confirm Withdrawal</a>`
+        });
+
+        document.getElementById('withdraw-status').textContent = '⏳ Withdrawal request sent for admin approval.';
+        setTimeout(closeWithdraw, 2000);
+      } catch (error) {
+        document.getElementById('withdraw-status').textContent = '❌ Failed to send withdrawal request.';
+        console.error('Withdraw error:', error);
+      }
+    }
+
+    function showDeposit() {
+      document.getElementById('deposit-modal').style.display = 'flex';
+      document.getElementById('deposit-status').textContent = '';
+      toggleAllMenu();
+    }
+
+    function closeDeposit() {
+      document.getElementById('deposit-modal').style.display = 'none';
+    }
+
+    async function initiateDeposit() {
+      const mobileNumber = document.getElementById('deposit-mobile-number').value;
+      const depositAmount = parseFloat(document.getElementById('deposit-amount').value);
+      const method = document.getElementById('deposit-method').value;
+
+      if (depositAmount < 100) {
+        document.getElementById('deposit-status').textContent = '❌ Minimum deposit amount is 100 Taka.';
+        return;
+      }
+      if (!mobileNumber || !depositAmount) {
+        document.getElementById('deposit-status').textContent = '❌ Please fill in all fields.';
+        return;
+      }
+
+      const transactionId = `TXN${Date.now()}_${userId}`;
+      const transaction = {
+        type: 'deposit',
+        userId,
+        mobileNumber,
+        amount: depositAmount,
+        method,
+        status: 'pending',
+        transactionId,
+        timestamp: Date.now()
+      };
+
+      try {
+        // Razorpay Payment
+        const options = {
+          key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+          amount: depositAmount * 100, // Amount in paise
+          currency: 'BDT',
+          name: 'World Work',
+          description: 'Deposit Funds',
+          order_id: await createRazorpayOrder(transactionId, depositAmount), // Backend call
+          handler: async function(response) {
+            pendingTransactions.push(transaction);
+            localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
+            await mockSendEmail({
+              to: 'sabbirasdf088@gmail.com',
+              subject: `Deposit Request from User ${userId}`,
+              body: `User ${userId} (${userName}) deposited ${depositAmount} ৳ via ${method}. Mobile: ${mobileNumber}. Transaction ID: ${transactionId}. Payment ID: ${response.razorpay_payment_id}. <br><br><a href="https://your-backend.com/api/confirm?transactionId=${transactionId}&type=deposit">Confirm Deposit</a>`
+            });
+            document.getElementById('deposit-status').textContent = '⏳ Deposit request sent for admin approval.';
+            setTimeout(closeDeposit, 2000);
+          },
+          prefill: {
+            contact: mobileNumber,
+            email: 'user@example.com'
+          },
+          theme: {
+            color: '#00f7ff'
+          },
+          method: {
+            upi: method === 'upi',
+            gpay: method === 'google-pay',
+            netbanking: true,
+            card: true
+          }
+        };
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+      } catch (error) {
+        document.getElementById('deposit-status').textContent = '❌ Deposit failed. Please try again.';
+        console.error('Deposit error:', error);
+      }
+    }
+
+    function showRecharge() {
+      document.getElementById('recharge-modal').style.display = 'flex';
+      document.getElementById('recharge-status').textContent = '';
+      alert('⚠ Minimum recharge 20 Taka.');
+      toggleAllMenu();
+    }
+
+    function closeRecharge() {
+      document.getElementById('recharge-modal').style.display = 'none';
+    }
+
+    async function initiateRecharge() {
+      const mobileNumber = document.getElementById('recharge-mobile-number').value;
+      const rechargeAmount = parseFloat(document.getElementById('recharge-amount').value);
+      const method = document.getElementById('recharge-method').value;
+
+      if (rechargeAmount < 20) {
+        document.getElementById('recharge-status').textContent = '❌ Minimum recharge amount is 20 Taka.';
+        return;
+      }
+      if (!mobileNumber || !rechargeAmount) {
+        document.getElementById('recharge-status').textContent = '❌ Please fill in all fields.';
+        return;
+      }
+      if (balance < rechargeAmount) {
+        document.getElementById('recharge-status').textContent = '❌ Insufficient balance.';
+        return;
+      }
+
+      const transactionId = `TXN${Date.now()}_${userId}`;
+      const transaction = {
+        type: 'recharge',
+        userId,
+        mobileNumber,
+        amount: rechargeAmount,
+        method,
+        status: 'pending',
+        transactionId,
+        timestamp: Date.now()
+      };
+
+      try {
+        // Razorpay Payment
+        const options = {
+          key: 'YOUR_RAZORPAY_KEY', // Replace with your Razorpay key
+          amount: rechargeAmount * 100,
+          currency: 'BDT',
+          name: 'World Work',
+          description: 'Recharge',
+          order_id: await createRazorpayOrder(transactionId, rechargeAmount),
+          handler: async function(response) {
+            pendingTransactions.push(transaction);
+            localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
+            await mockSendEmail({
+              to: 'sabbirasdf088@gmail.com',
+              subject: `Recharge Request from User ${userId}`,
+              body: `User ${userId} (${userName}) recharged ${rechargeAmount} ৳ via ${method}. Mobile: ${mobileNumber}. Transaction ID: ${transactionId}. Payment ID: ${response.razorpay_payment_id}. <br><br><a href="https://your-backend.com/api/confirm?transactionId=${transactionId}&type=recharge">Confirm Recharge</a>`
+            });
+            document.getElementById('recharge-status').textContent = '⏳ Recharge request sent for admin approval.';
+            setTimeout(closeRecharge, 2000);
+          },
+          prefill: {
+            contact: mobileNumber,
+            email: 'user@example.com'
+          },
+          theme: {
+            color: '#00f7ff'
+          },
+          method: {
+            upi: method === 'upi',
+            gpay: method === 'google-pay',
+            netbanking: true,
+            card: true
+          }
+        };
+        const razorpay = new Razorpay(options);
+        razorpay.open();
+      } catch (error) {
+        document.getElementById('recharge-status').textContent = '❌ Recharge failed. Please try again.';
+        console.error('Recharge error:', error);
+      }
+    }
+
+    async function createRazorpayOrder(transactionId, amount) {
+      // Mock backend call - replace with actual backend API
+      return new Promise(resolve => {
+        setTimeout(() => resolve(`order_${transactionId}`), 500);
+      });
+      // Example backend (Node.js):
+      /*
+      const response = await fetch('/api/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: amount * 100, currency: 'BDT', receipt: transactionId })
+      });
+      const data = await response.json();
+      return data.orderId;
+      */
+    }
+
+    async function mockSendEmail({ to, subject, body }) {
+      // Mock email sending - replace with actual backend email service
+      console.log(`Mock email sent: to=${to}, subject=${subject}, body=${body}`);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      return { success: true };
+    }
+
+    // Simulate backend confirmation (for testing without backend)
+    function confirmTransaction(transactionId, type) {
+      const transaction = pendingTransactions.find(t => t.transactionId === transactionId && t.type === type);
+      if (!transaction) {
+        console.error('Transaction not found');
+        return false;
+      }
+      if (transaction.status !== 'pending') {
+        console.error('Transaction already processed');
+        return false;
+      }
+
+      transaction.status = 'completed';
+      if (type === 'withdraw') {
+        balance -= transaction.amount;
+      } else if (type === 'deposit' || type === 'recharge') {
+        balance += transaction.amount;
+        if (type === 'deposit') {
+          lastDepositAmount = transaction.amount;
+          lastDepositMethod = transaction.method;
+          lastDepositMobile = transaction.mobileNumber;
+          localStorage.setItem('lastDepositAmount', lastDepositAmount);
+          localStorage.setItem('lastDepositMethod', lastDepositMethod);
+          localStorage.setItem('lastDepositMobile', lastDepositMobile);
+        }
+      }
+
+      localStorage.setItem('balance', balance);
+      localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
+      updateUI();
+      return true;
+    }
+
+    function showEditNameModal() {
+      document.getElementById('name-input').value = userName === 'Guest' ? '' : userName;
+      document.getElementById('name-status').textContent = '';
+      document.getElementById('edit-name-modal').style.display = 'flex';
+    }
+
+    function closeEditNameModal() {
+      document.getElementById('edit-name-modal').style.display = 'none';
+    }
+
+    function saveName() {
+      const nameInput = document.getElementById('name-input').value.trim();
+      if (!nameInput) {
+        document.getElementById('name-status').textContent = '❌ Please enter a valid name.';
+        return;
+      }
+      if (nameInput.length > 20) {
+        document.getElementById('name-status').textContent = '❌ Name cannot exceed 20 characters.';
+        return;
+      }
+      userName = nameInput;
+      localStorage.setItem('userName', userName);
+      updateUI();
+      document.getElementById('name-status').textContent = '✅ Name saved successfully!';
+      setTimeout(closeEditNameModal, 1000);
+    }
+
+    function uploadProfilePicture(event) {
+      const file = event.target.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = new Image();
+          img.src = e.target.result;
+          img.onload = function() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 130;
+            canvas.height = 130;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, 130, 130);
+            const resizedImage = canvas.toDataURL('image/jpeg', 0.8);
+            document.getElementById('profile-picture').src = resizedImage;
+            localStorage.setItem('profilePicture', resizedImage);
+            alert('Profile picture uploaded successfully!');
+          };
+        };
+        reader.readAsDataURL(file);
+      } else {
+        alert('Please select a valid image file.');
+      }
+    }
+
+    function startGame() {
+      alert('Game started! This feature is under development.');
+      toggleAllMenu();
+    }
+
+    function showMyJob() {
+      document.getElementById('my-job-modal').style.display = 'flex';
+      toggleAllMenu();
+    }
+
+    function closeMyJob() {
+      document.getElementById('my-job-modal').style.display = 'none';
+    }
+
+    function selectNormalJob() {
+      document.getElementById('my-job-modal').style.display = 'none';
+      document.getElementById('normal-job-modal').style.display = 'flex';
+    }
+
+    function closeNormalJob() {
+      document.getElementById('normal-job-modal').style.display = 'none';
+    }
+
+    function selectFastWork() {
+      document.getElementById('normal-job-modal').style.display = 'none';
+      initializeFastWorkPrograms();
+      document.getElementById('fast-work-modal').style.display = 'flex';
+    }
+
+    function closeFastWorkModal() {
+      document.getElementById('fast-work-modal').style.display = 'none';
+    }
+
+    function selectFutureJob() {
+      document.getElementById('normal-job-modal').style.display = 'none';
+      initializeFutureWorkPrograms();
+      document.getElementById('future-work-modal').style.display = 'flex';
+    }
+
+    function closeFutureWorkModal() {
+      document.getElementById('future-work-modal').style.display = 'none';
+    }
+
+    function selectHardJob() {
+      alert('Hard Job selected! This feature is under development.');
+      closeMyJob();
+    }
+
+    function selectLottery() {
+      alert('Lottery selected! This feature is under development.');
+      closeMyJob();
+    }
+
+    function initializeFastWorkPrograms() {
+      const programList = document.getElementById('fast-work-programs');
+      programList.innerHTML = '';
+      programPrices.forEach((price, index) => {
+        const programName = `Program ${index + 1}`;
+        const isPurchased = fastWorkPurchased.includes(index);
+        const programItem = document.createElement('div');
+        programItem.className = 'program-item';
+        programItem.innerHTML = `
+          <span>${programName} - ${price} Taka</span>
+          <button onclick="showPurchaseModal('fast', ${index}, '${programName}', ${price})" ${isPurchased ? 'disabled' : ''}>
+            ${isPurchased ? 'Purchased' : 'Buy'}
+          </button>
+        `;
+        programList.appendChild(programItem);
+      });
+    }
+
+    function initializeFutureWorkPrograms() {
+      const programList = document.getElementById('future-work-programs');
+      programList.innerHTML = '';
+      programPrices.forEach((price, index) => {
+        const programName = `Program ${index + 1}`;
+        const isPurchased = futureWorkPurchased.includes(index);
+        const programItem = document.createElement('div');
+        programItem.className = 'program-item';
+        programItem.innerHTML = `
+          <span>${programName} - ${price} Taka</span>
+          <button onclick="showPurchaseModal('future', ${index}, '${programName}', ${price})" ${isPurchased ? 'disabled' : ''}>
+            ${isPurchased ? 'Purchased' : 'Buy'}
+          </button>
+        `;
+        programList.appendChild(programItem);
+      });
+    }
+
+    let currentPurchase = {};
+
+    function showPurchaseModal(type, index, programName, price) {
+      currentPurchase = { type, index, programName, price };
+      document.getElementById('purchase-program').textContent = programName;
+      document.getElementById('purchase-price').textContent = price;
+      document.getElementById('purchase-balance').textContent = balance.toFixed(2);
+      document.getElementById('gen1-income').textContent = (price * 0.10).toFixed(2);
+      document.getElementById('gen2-income').textContent = (price * 0.07).toFixed(2);
+      document.getElementById('gen3-income').textContent = (price * 0.05).toFixed(2);
+      document.getElementById('gen4-income').textContent = (price * 0.02).toFixed(2);
+      document.getElementById('purchase-status').textContent = '';
+      document.getElementById('purchase-modal').style.display = 'flex';
+    }
+
+    function closePurchaseModal() {
+      document.getElementById('purchase-modal').style.display = 'none';
+    }
+
+    async function confirmPurchase() {
+      const { type, index, programName, price } = currentPurchase;
+      if (balance < price) {
+        document.getElementById('purchase-status').textContent = 'Cannot purchase due to insufficient funds. Please deposit more funds.';
+        return;
+      }
+
+      try {
+        balance -= price;
+        totalIncome += price;
+        if (type === 'fast') {
+          fastWorkPurchased.push(index);
+          localStorage.setItem('fastWorkPurchasedPrograms', JSON.stringify(fastWorkPurchased));
+        } else if (type === 'future') {
+          futureWorkPurchased.push(index);
+          localStorage.setItem('futureWorkPurchasedPrograms', JSON.stringify(futureWorkPurchased));
+        }
+
+        // Simulate generation income distribution
+        const genIncome = [
+          { userId: referralChain[0]?.userId, amount: price * 0.10 },
+          { userId: referralChain[1]?.userId, amount: price * 0.07 },
+          { userId: referralChain[2]?.userId, amount: 0.05 },
+          { userId: referralChain[3]?.userId, amount: price * 0.02 }
+        ];
+
+        genIncome.forEach((income, i) => {
+          if (income.userId) {
+            console.log(`Distributing ${income.amount} Taka to user ${income.userId} (Generation ${i + 1})`);
+          }
+        });
+
+        localStorage.setItem('balance', balance);
+        localStorage.setItem('totalIncome', totalIncome);
+        updateUI();
+        document.getElementById('purchase-status').textContent = `✅ Successfully purchased ${programName} for ${price} Taka!`;
+        setTimeout(() => {
+          closePurchaseModal();
+          if (type === 'fast') {
+            initializeFastWorkPrograms();
+            document.getElementById('fast-work-modal').style.display = 'flex';
+          } else {
+            initializeFutureWorkPrograms();
+            document.getElementById('future-work-modal').style.display = 'flex';
+          }
+        }, 2000);
+      } catch (error) {
+        document.getElementById('purchase-status').textContent = '❌ Purchase failed. Please try again.';
+        console.error('Purchase error:', error);
+      }
+    }
+
+    function copyReferLink() {
+      const referLink = document.getElementById('refer-link').value;
+      navigator.clipboard.writeText(referLink).then(() => {
+        alert('Referral link copied to clipboard!');
+      }).catch(err => {
+        alert('Failed to copy referral link.');
+        console.error('Copy error:', err);
+      });
+    }
+
+    function showLeaderboard() {
+      document.getElementById('leaderboard-modal').style.display = 'flex';
+      toggleAllMenu();
+    }
+
+    function closeLeaderboard() {
+      document.getElementById('leaderboard-modal').style.display = 'none';
+    }
+
+    function showBalance() {
+      document.getElementById('balance-modal').style.display = 'flex';
+      toggleAllMenu();
+    }
+
+    function closeBalance() {
+      document.getElementById('balance-modal').style.display = 'none';
+    }
+
+    function showMonthlySalary() {
+      initializeMonthlySalary();
+      document.getElementById('monthly-salary-modal').style.display = 'flex';
+      toggleAllMenu();
+    }
+
+    function closeMonthlySalary() {
+      document.getElementById('monthly-salary-modal').style.display = 'none';
+    }
+
+    function initializeMonthlySalary() {
+      const salaryList = document.getElementById('salary-list');
+      salaryList.innerHTML = '';
+      const now = Date.now();
+      const oneMonth = 30 * 24 * 60 * 60 * 1000;
+
+      salaryTiers.forEach((tier, index) => {
+        const isEligible = directReferrals >= tier.directReferrals &&
+                           teamSize >= tier.teamSize &&
+                           fastWorkPurchased.length >= tier.fastWorkRequired &&
+                           futureWorkPurchased.length >= tier.futureWorkRequired;
+        const isActive = activeSalaryTier === index + 1;
+        const salaryAmount = lastDepositAmount * (tier.percentage / 100);
+        const canClaim = isEligible && isActive && !hasClaimedThisCycle && (now - salaryActivationTime) >= oneMonth;
+
+        const salaryItem = document.createElement('div');
+        salaryItem.className = 'salary-item';
+        salaryItem.innerHTML = `
+          <p>Tier ${index + 1}: ${tier.percentage}% of Last Deposit (${salaryAmount.toFixed(2)} Taka)</p>
+          <p>Requirements: ${tier.directReferrals} Direct Referrals, ${tier.teamSize} Team Size, ${tier.fastWorkRequired} Fast Work, ${tier.futureWorkRequired} Future Work</p>
+          <p>Status: ${isEligible ? (isActive ? 'Active' : 'Eligible') : 'Not Eligible'}</p>
+          <button onclick="claimSalary(${index}, ${salaryAmount})" ${canClaim ? '' : 'disabled'}>
+            ${canClaim ? 'Claim Salary' : (isActive && hasClaimedThisCycle ? 'Already Claimed' : 'Not Available')}
+          </button>
+        `;
+        salaryList.appendChild(salaryItem);
+      });
+
+      updateCountdown();
+      document.getElementById('total-claimed-salary').textContent = totalClaimedSalary.toFixed(2);
+    }
+
+    function updateCountdown() {
+      const now = Date.now();
+      const oneMonth = 30 * 24 * 60 * 60 * 1000;
+      const countdownElement = document.getElementById('countdown-timer');
+
+      if (activeSalaryTier === 0 || !salaryActivationTime) {
+        countdownElement.textContent = 'Next Salary: Not Activated';
+        return;
+      }
+
+      const timeLeft = oneMonth - (now - salaryActivationTime);
+      if (timeLeft <= 0) {
+        countdownElement.textContent = 'Next Salary: Ready to Claim';
+        hasClaimedThisCycle = false;
+        localStorage.setItem('hasClaimedThisCycle', JSON.stringify(hasClaimedThisCycle));
+        initializeMonthlySalary();
+      } else {
+        const days = Math.floor(timeLeft / (24 * 60 * 60 * 1000));
+        const hours = Math.floor((timeLeft % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const minutes = Math.floor((timeLeft % (60 * 60 * 1000)) / (60 * 1000));
+        countdownElement.textContent = `Next Salary: ${days}d ${hours}h ${minutes}m`;
+        setTimeout(updateCountdown, 60000);
+      }
+    }
+
+    async function claimSalary(tierIndex, salaryAmount) {
+      if (activeSalaryTier !== tierIndex + 1) {
+        alert('This salary tier is not active.');
+        return;
+      }
+
+      const transactionId = `TXN${Date.now()}_${userId}`;
+      const transaction = {
+        type: 'salary',
+        userId,
+        amount: salaryAmount,
+        status: 'pending',
+        transactionId,
+        timestamp: Date.now()
+      };
+
+      try {
+        pendingTransactions.push(transaction);
+        localStorage.setItem('pendingTransactions', JSON.stringify(pendingTransactions));
+
+        await mockSendEmail({
+          to: 'sabbirasdf088@gmail.com',
+          subject: `Salary Claim Request from User ${userId}`,
+          body: `User ${userId} (${userName}) claimed a salary of ${salaryAmount} Taka (Tier ${tierIndex + 1}). Transaction ID: ${transactionId}. <br><br><a href="https://your-backend.com/api/confirm?transactionId=${transactionId}&type=salary">Confirm Salary</a>`
+        });
+
+        alert('Salary claim request sent for admin approval.');
+        hasClaimedThisCycle = true;
+        localStorage.setItem('hasClaimedThisCycle', JSON.stringify(hasClaimedThisCycle));
+        initializeMonthlySalary();
+      }
+catch (error) {
+          alert('Failed to send salary claim request.');
+          console.error('Salary claim error:', error);
+        }
+      }
+
+      function logout() {
+        localStorage.clear();
+        alert('Logged out successfully!');
+        window.location.reload();
+      }
+
+      // Initialize the page
+      initializeReferLink();
+      updateUI();
+      initializeFastWorkPrograms();
+      initializeFutureWorkPrograms();
+      initializeMonthlySalary();
+    </script>
+  </body>
+</html>
