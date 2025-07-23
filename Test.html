@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ইয়ার্নিং - আপনার আয়ের প্ল্যাটফর্ম</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Hind Siliguri', sans-serif;
+        }
+        
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --purple: #8e44ad;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 15px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            padding: 10px 5%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .logo-icon i {
+            font-size: 24px;
+            color: white;
+        }
+        
+        .logo-text {
+            font-weight: 700;
+            font-size: 24px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+        }
+        
+        .nav-links li a {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 5px 0;
+        }
+        
+        .nav-links li a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links li a:hover:after,
+        .nav-links li a.active:after {
+            width: 100%;
+        }
+        
+        .nav-links li a:hover,
+        .nav-links li a.active {
+            color: var(--primary);
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .auth-buttons button {
+            padding: 12px 25px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+        }
+        
+        .login-btn {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary) !important;
+        }
+        
+        .signup-btn {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.4);
+        }
+        
+        .auth-buttons button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.5);
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 100px 5% 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero:before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            right: -200px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(58, 12, 163, 0.05) 100%);
+            z-index: -1;
+        }
+        
+        .hero-content {
+            flex: 1;
+            max-width: 600px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        .hero-content h2 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 25px;
+            color: var(--dark);
+        }
+        
+        .hero-content h2 span {
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+        }
+        
+        .hero-content h2 span:after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: rgba(67, 97, 238, 0.2);
+            border-radius: 5px;
+            z-index: -1;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            line-height: 1.7;
+            margin-bottom: 35px;
+            color: #555;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .hero-buttons button {
+            padding: 16px 35px;
+            border-radius: 30px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 17px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .start-earning {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.5);
+        }
+        
+        .learn-more {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+        
+        .hero-buttons button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(67, 97, 238, 0.6);
+        }
+        
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        .hero-image-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+        }
+        
+        .dashboard-preview {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+            transform: perspective(1000px) rotateY(-10deg);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .dashboard-header {
+            background: var(--gradient);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            padding: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .stat-card h4 {
+            font-size: 24px;
+            color: var(--dark);
+            margin: 10px 0 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        /* Features Section */
+        .features {
+            padding: 100px 5%;
+            background: white;
+            position: relative;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.8rem;
+            color: var(--dark);
+            margin-bottom: 15px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title h2:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
+            border-radius: 10px;
+        }
+        
+        .section-title p {
+            font-size: 1.1rem;
+            color: #777;
+            max-width: 700px;
+            margin: 25px auto 0;
+            line-height: 1.7;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            text-align: center;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .feature-card:after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+            transition: all 0.4s ease;
+            z-index: -1;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 50px rgba(67, 97, 238, 0.2);
+        }
+        
+        .feature-card:hover:after {
+            height: 100%;
+        }
+        
+        .feature-icon {
+            width: 90px;
+            height: 90px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .feature-icon i {
+            font-size: 40px;
+            color: var(--primary);
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover .feature-icon i {
+            color: white;
+        }
+        
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: var(--dark);
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover h3 {
+            color: white;
+        }
+        
+        .feature-card p {
+            color: #666;
+            line-height: 1.7;
+            transition: all 0.4s ease;
+        }
+        
+        .feature-card:hover p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Dashboard Section */
+        .dashboard-section {
+            padding: 100px 5%;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2ebf5 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .dashboard-section:before {
+            content: '';
+            position: absolute;
+            top: -200px;
+            left: -200px;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1) 0%, rgba(58, 12, 163, 0.05) 100%);
+            z-index: 0;
+        }
+        
+        .dashboard-container {
+            background: white;
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 40px 60px rgba(0, 0, 0, 0.12);
+            position: relative;
+            z-index: 1;
+        }
+        
+        .dashboard-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .dashboard-header h3 {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+        
+        .stat-card:hover {
+            background: rgba(67, 97, 238, 0.05);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.1);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(67, 97, 238, 0.1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+        }
+        
+        .stat-icon i {
+            font-size: 28px;
+            color: var(--primary);
+        }
+        
+        .stat-card h4 {
+            font-size: 32px;
+            color: var(--dark);
+            margin-bottom: 5px;
+        }
+        
+        .stat-card p {
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .recent-tasks {
+            padding: 30px;
+        }
+        
+        .recent-tasks h4 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            color: var(--dark);
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recent-tasks h4 i {
+            color: var(--primary);
+        }
+        
+        .task-list {
+            list-style: none;
+        }
+        
+        .task-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+            border-bottom: 1px solid #f5f5f5;
+            transition: all 0.3s ease;
+        }
+        
+        .task-item:hover {
+            background: #fbfcff;
+            transform: translateX(5px);
+        }
+        
+        .task-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .task-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(67, 97, 238, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .task-icon i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+        
+        .task-text h5 {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        
+        .task-text p {
+            color: #777;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .task-text p i {
+            color: var(--success);
+        }
+        
+        .task-amount {
+            font-weight: 700;
+            color: var(--success);
+            font-size: 20px;
+        }
+        
+        /* Testimonials */
+        .testimonials {
+            padding: 100px 5%;
+            background: white;
+            position: relative;
+        }
+        
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+        
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px 30px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.03);
+            transition: all 0.4s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(67, 97, 238, 0.15);
+        }
+        
+        .testimonial-card:before {
+            content: """;
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 100px;
+            color: rgba(67, 97, 238, 0.05);
+            font-family: serif;
+            line-height: 1;
+            z-index: 0;
+        }
+        
+        .testimonial-content {
+            margin-bottom: 30px;
+            color: #555;
+            line-height: 1.8;
+            font-style: italic;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+        
+        .author-info h5 {
+            font-size: 19px;
+            margin-bottom: 5px;
+        }
+        
+        .author-info p {
+            color: var(--primary);
+            font-size: 15px;
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            padding: 80px 5% 40px;
+            position: relative;
+        }
+        
+        .footer:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        
+        .footer-col h4 {
+            font-size: 22px;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .footer-col h4:after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--accent);
+            border-radius: 10px;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+        
+        .footer-links a {
+            color: #bbb;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-links a i {
+            width: 24px;
+            color: var(--accent);
+        }
+        
+        .footer-links a:hover {
+            color: var(--accent);
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+        
+        .social-links a:hover {
+            background: var(--accent);
+            transform: translateY(-5px);
+        }
+        
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #999;
+            font-size: 15px;
+        }
+        
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-20px);
+            }
+            100% {
+                transform: translateY(0px);
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 80px 5% 60px;
+            }
+            
+            .hero-content {
+                margin-bottom: 60px;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .hero-image {
+                justify-content: center;
+            }
+            
+            .dashboard-preview {
+                transform: perspective(1000px) rotateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hero-content h2 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content h2 {
+                font-size: 2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .auth-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .auth-buttons button {
+                width: 100%;
+            }
+            
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-coins"></i>
+            </div>
+            <div class="logo-text">ইয়ার্নিং</div>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#" class="active">হোম</a></li>
+            <li><a href="#">টাস্ক</a></li>
+            <li><a href="#">আয়</a></li>
+            <li><a href="#">ড্যাশবোর্ড</a></li>
+            <li><a href="#">যোগাযোগ</a></li>
+        </ul>
+        <div class="auth-buttons">
+            <button class="login-btn">লগইন</button>
+            <button class="signup-btn">সাইন আপ</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>সহজ উপায়ে <span>অনলাইনে আয়</span> করুন</h2>
+            <p>ইয়ার্নিং প্ল্যাটফর্মে ছোট ছোট কাজ সম্পন্ন করে সহজেই আয় করুন। সার্ভে পূরণ, অ্যাপ টেস্টিং, ডেটা এন্ট্রির মত কাজ করে প্রতি মাসে বাড়তি আয় করুন।</p>
+            <div class="hero-buttons">
+                <button class="start-earning">
+                    <i class="fas fa-rocket"></i> আয় শুরু করুন
+                </button>
+                <button class="learn-more">
+                    <i class="fas fa-info-circle"></i> বিস্তারিত জানুন
+                </button>
+            </div>
+        </div>
+        <div class="hero-image">
+            <div class="hero-image-container">
+                <div class="dashboard-preview">
+                    <div class="dashboard-header">
+                        <h3>আপনার ড্যাশবোর্ড</h3>
+                        <div>
+                            <span>ব্যালেন্স: ৳1,250</span>
+                        </div>
+                    </div>
+                    <div class="dashboard-stats">
+                        <div class="stat-card">
+                            <h4>৳1,250</h4>
+                            <p>বর্তমান ব্যালেন্স</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>৳8,500</h4>
+                            <p>মোট আয়</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>42</h4>
+                            <p>সম্পন্ন কাজ</p>
+                        </div>
+                        <div class="stat-card">
+                            <h4>5</h4>
+                            <p>চলমান কাজ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="section-title">
+            <h2>কেন আমাদের প্ল্যাটফর্ম বেছে নিবেন?</h2>
+            <p>ইয়ার্নিং প্ল্যাটফর্মের মাধ্যমে সহজে আয় করার সুবিধাসমূহ</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>দ্রুত পেমেন্ট</h3>
+                <p>কাজ শেষ করার ২৪ ঘন্টার মধ্যে পেমেন্ট পেয়ে যান। বিকাশ, নগদ, রকেটের মাধ্যমে টাকা উত্তোলন করুন।</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h3>বিভিন্ন ধরনের কাজ</h3>
+                <p>প্রতিদিন নতুন নতুন কাজ পাবেন। সার্ভে, মার্কেটিং, কন্টেন্ট রাইটিং, ডেটা এন্ট্রি সহ বিভিন্ন কাজ।</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>যেকোনো ডিভাইস থেকে</h3>
+                <p>আপনার স্মার্টফোন, ট্যাবলেট বা কম্পিউটার থেকে যেকোনো সময় কাজ করুন। ইন্টারনেট সংযোগ থাকলেই চলবে।</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section class="dashboard-section">
+        <div class="section-title">
+            <h2>ইউজার ড্যাশবোর্ড</h2>
+            <p>আপনার আয়, কাজের অবস্থা এবং ব্যালেন্স ট্র্যাক করুন</p>
+        </div>
+        <div class="dashboard-container">
+            <div class="dashboard-header">
+                <h3>আপনার ড্যাশবোর্ড</h3>
+                <div>
+                    <span>ব্যালেন্স: ৳1,250</span>
+                    <button class="signup-btn" style="margin-left: 15px;">উত্তোলন করুন</button>
+                </div>
+            </div>
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <h4>৳1,250</h4>
+                    <p>বর্তমান ব্যালেন্স</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-money-check"></i>
+                    </div>
+                    <h4>৳8,500</h4>
+                    <p>মোট আয়</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h4>42</h4>
+                    <p>সম্পন্ন কাজ</p>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-hourglass-half"></i>
+                    </div>
+                    <h4>5</h4>
+                    <p>চলমান কাজ</p>
+                </div>
+            </div>
+            <div class="recent-tasks">
+                <h4><i class="fas fa-history"></i> সাম্প্রতিক কাজ</h4>
+                <ul class="task-list">
+                    <li class="task-item">
+                        <div class="task-info">
+                            <div class="task-icon">
+                                <i class="fas fa-poll"></i>
+                            </div>
+                            <div class="task-text">
+                                <h5>সার্ভে: স্মার্টফোন ব্যবহার</h5>
+                                <p><i class="fas fa-check-circle"></i> সম্পন্ন: আজ সকাল ১০:৩০</p>
+                            </div>
+                        </div>
+                        <div class="task-amount">৳80</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-info">
+                            <div class="task-icon">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="task-text">
+                                <h5>অ্যাপ রিভিউ লিখুন</h5>
+                                <p><i class="fas fa-check-circle"></i> সম্পন্ন: গতকাল সন্ধ্যা ৭:১৫</p>
+                            </div>
+                        </div>
+                        <div class="task-amount">৳120</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-info">
+                            <div class="task-icon">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <div class="task-text">
+                                <h5>ডেটা এন্ট্রি - ৫০ আইটেম</h5>
+                                <p><i class="fas fa-check-circle"></i> সম্পন্ন: ২ দিন আগে</p>
+                            </div>
+                        </div>
+                        <div class="task-amount">৳200</div>
+                    </li>
+                    <li class="task-item">
+                        <div class="task-info">
+                            <div class="task-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div class="task-text">
+                                <h5>ভিডিও রিভিউ তৈরি করুন</h5>
+                                <p><i class="fas fa-check-circle"></i> সম্পন্ন: ৩ দিন আগে</p>
+                            </div>
+                        </div>
+                        <div class="task-amount">৳150</div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="section-title">
+            <h2>ব্যবহারকারীদের মতামত</h2>
+            <p>আমাদের প্ল্যাটফর্ম ব্যবহার করে যা বলছেন তারা</p>
+        </div>
+        <div class="testimonial-grid">
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    এই প্ল্যাটফর্মের মাধ্যমে আমি প্রতিমাসে ৮-১০ হাজার টাকা আয় করি। কাজগুলো সহজ এবং পেমেন্ট খুব দ্রুত পাই। পার্টটাইম কাজ খুঁজছিলেন এমন সবার জন্য এটি আদর্শ।
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">র</div>
+                    <div class="author-info">
+                        <h5>রহিমা আক্তার</h5>
+                        <p>ছাত্রী, ঢাকা</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    আমি একজন গৃহিণী, বাড়িতে বসে কিছু আয় করার জন্য এই প্ল্যাটফর্ম ব্যবহার করি। প্রতিদিন ১-২ ঘন্টা কাজ করে মাসে ৫-৬ হাজার টাকা আয় করি যা আমার পরিবারের জন্য সহায়ক।
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">ক</div>
+                    <div class="author-info">
+                        <h5>কামরুন নাহার</h5>
+                        <p>গৃহিণী, চট্টগ্রাম</p>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    আমার ফ্রিল্যান্সিং কাজের পাশাপাশি অতিরিক্ত আয়ের জন্য এই প্ল্যাটফর্ম ব্যবহার করি। কাজের ধরন ভালো এবং পেমেন্ট সিস্টেম নির্ভরযোগ্য। সত্যিই দারুণ একটি প্ল্যাটফর্ম।
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">ম</div>
+                    <div class="author-info">
+                        <h5>মোহাম্মদ রাসেল</h5>
+                        <p>ওয়েব ডেভেলপার, রাজশাহী</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>ইয়ার্নিং</h4>
+                <p>অনলাইনে সহজ উপায়ে আয় করুন। বিভিন্ন ধরনের কাজ করে প্রতিমাসে বাড়তি আয় করুন।</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>লিঙ্কস</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> হোম</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> আমাদের সম্পর্কে</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> সেবাসমূহ</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> কাজের তালিকা</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> যোগাযোগ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>সেবাসমূহ</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> অনলাইন সার্ভে</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> ডেটা এন্ট্রি</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> অ্যাপ টেস্টিং</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> কন্টেন্ট রাইটিং</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> সোশ্যাল মিডিয়া টাস্ক</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>যোগাযোগ</h4>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-map-marker-alt"></i> ঢাকা, বাংলাদেশ</a></li>
+                    <li><a href="#"><i class="fas fa-phone"></i> +880 1XXX-XXXXXX</a></li>
+                    <li><a href="#"><i class="fas fa-envelope"></i> info@yearning.com</a></li>
+                    <li><a href="#"><i class="fas fa-clock"></i> শনি-বৃহ: সকাল ৯টা - রাত ১০টা</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; ২০২৩ ইয়ার্নিং. সকল স্বত্ব সংরক্ষিত | ডিজাইন করা হয়েছে <i class="fas fa-heart" style="color: #e74c3c;"></i> দ্বারা</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const animatedElements = document.querySelectorAll('.feature-card, .testimonial-card, .stat-card');
+            
+            animatedElements.forEach(element => {
+                element.style.opacity = '0';
+                element.style.transform = 'translateY(30px)';
+            });
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            animatedElements.forEach(element => {
+                observer.observe(element);
+            });
+            
+            // Hero buttons animation
+            const buttons = document.querySelectorAll('.hero-buttons button');
+            buttons.forEach((button, index) => {
+                button.style.transform = 'translateY(20px)';
+                button.style.opacity = '0';
+                setTimeout(() => {
+                    button.style.transition = 'all 0.5s ease';
+                    button.style.transform = 'translateY(0)';
+                    button.style.opacity = '1';
+                }, 300 + (index * 200));
+            });
+        });
+    </script>
+</body>
+</html>
