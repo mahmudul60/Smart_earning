@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Play & Earn</title>
+  <script src='//libtl.com/sdk.js' data-zone='9765202' data-sdk='show_9765202'></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      color: white;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      padding-bottom: 70px; /* Space for bottom navigation */
+    }
+
+    /* Enhanced Header Styling */
+    header {
+      background: linear-gradient(90deg, #1e3c72, #2a5298);
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: gold;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: shine 3s infinite;
+    }
+    @keyframes shine {
+      0% { left: -100%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+    header .app-title {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    header .app-title i {
+      font-size: 32px;
+      animation: bounce 1.5s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-5px); }
+    }
+
+    /* Notice Board Styling */
+    .notice-board {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 10px;
+      margin: 10px auto;
+      max-width: 90%;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(5px);
+      overflow: hidden;
+    }
+    .notice-text {
+      font-size: 16px;
+      color: gold;
+      font-weight: 500;
+      line-height: 1.5;
+      display: inline-block;
+      animation: slide 20s linear infinite;
+      white-space: nowrap;
+    }
+    @keyframes slide {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .page {
+      display: none;
+      padding: 20px;
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .active {
+      display: block;
+    }
+    .card {
+      background: rgba(0, 0, 0, 0.4);
+      margin: 15px auto;
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 420px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    .btn {
+      background: linear-gradient(to right, gold, orange);
+      color: black;
+      padding: 12px 24px;
+      margin: 10px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-block;
+      border: none;
+      transition: all 0.3s;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .btn:disabled {
+      background: #cccccc;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+    input, select {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      margin: 8px 0;
+      width: 85%;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+    input:invalid, select:invalid {
+      border: 2px solid #ff4444;
+    }
+    input:valid, select:valid {
+      border: 2px solid #4CAF50;
+    }
+    .task-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 10px 0;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+    }
+    .task-info {
+      text-align: left;
+      flex-grow: 1;
+    }
+    .task-reward {
+      font-weight: bold;
+      color: gold;
+    }
+    .completed-badge {
+      background: #4CAF50;
+      padding: 4px 10px;
+      border-radius: 10px;
+      font-size: 12px;
+      margin-left: 5px;
+    }
+    
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+      z-index: 1000;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+    }
+    .nav-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+      font-size: 12px;
+      padding: 5px 10px;
+      border-radius: 8px;
+      transition: all 0.3s;
+    }
+    .nav-btn i {
+      font-size: 20px;
+      margin-bottom: 4px;
+    }
+    .nav-btn.active {
+      background: rgba(255, 215, 0, 0.3);
+      color: gold;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Profile Page Styles */
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+    .stat-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 10px;
+      width: 100px;
+      margin: 5px;
+      transition: transform 0.3s;
+    }
+    .stat-box:hover {
+      transform: scale(1.05);
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: gold;
+    }
+    .stat-label {
+      font-size: 12px;
+      margin-top: 5px;
+    }
+    
+    /* Enhanced Withdraw Section */
+    .withdraw-section {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      padding: 25px;
+      border-radius: 15px;
+      margin: 20px 0;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    .withdraw-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.2),
+        transparent
+      );
+      animation: shine 4s infinite;
+    }
+    .withdraw-section h2 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: gold;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .progress-bar-container {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      margin: 10px 0;
+      padding: 5px;
+    }
+    .progress-bar {
+      height: 20px;
+      background: linear-gradient(to right, #4CAF50, #8BC34A);
+      border-radius: 8px;
+      width: 0;
+      transition: width 0.5s ease-in-out;
+    }
+    .withdraw-inputs {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+    .withdraw-inputs input, .withdraw-inputs select {
+      width: 90%;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+    .withdraw-msg {
+      font-size: 14px;
+      margin: 10px 0;
+      color: #ffd700;
+    }
+    .withdraw-btn {
+      background: linear-gradient(to right, #ff6f00, #ffca28);
+      padding: 14px 30px;
+      font-size: 16px;
+    }
+    .withdraw-btn:hover {
+      transform: translateY(-3px);
+    }
+
+    /* Modal Styling */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: linear-gradient(135deg, #2a5298, #1e3c72);
+      padding: 20px;
+      border-radius: 15px;
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+    .modal-content h3 {
+      color: gold;
+      margin-bottom: 15px;
+    }
+    .modal-content p {
+      color: white;
+      margin-bottom: 20px;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: space-around;
+    }
+    .modal-btn {
+      padding: 10px 20px;
+      border-radius: 50px;
+      cursor: pointer;
+    }
+    .modal-btn.confirm {
+      background: linear-gradient(to right, #4CAF50, #8BC34A);
+      color: white;
+    }
+    .modal-btn.cancel {
+      background: linear-gradient(to right, #ff4444, #ff6f00);
+      color: white;
+    }
+
+    /* Homepage Enhancements */
+    .balance-display {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 15px;
+      margin: 10px auto;
+      max-width: 300px;
+      border-radius: 12px;
+      font-size: 20px;
+      font-weight: bold;
+      color: gold;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+      100% { transform: scale(1); }
+    }
+    .banner-container {
+      max-width: 90%;
+      margin: 20px auto;
+      overflow: hidden;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .banner {
+      display: flex;
+      animation: slideBanner 15s infinite;
+    }
+    .banner-item {
+      min-width: 100%;
+      padding: 20px;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      color: white;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    @keyframes slideBanner {
+      0% { transform: translateX(0); }
+      33.33% { transform: translateX(-100%); }
+      66.66% { transform: translateX(-200%); }
+      100% { transform: translateX(0); }
+    }
+    .welcome-section {
+      padding: 20px;
+      margin: 20px auto;
+      max-width: 500px;
+    }
+    .welcome-title {
+      font-size: 28px;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      animation: fadeInTitle 1s ease-in;
+    }
+    .welcome-subtitle {
+      font-size: 18px;
+      margin-bottom: 20px;
+      opacity: 0.9;
+      animation: fadeInSubtitle 1.5s ease-in;
+    }
+    @keyframes fadeInTitle {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInSubtitle {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 0.9; transform: translateY(0); }
+    }
+
+    /* Referral Section */
+    .referral-container {
+      background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+      padding: 20px;
+      border-radius: 15px;
+      margin: 20px auto;
+      max-width: 500px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    }
+    .referral-title {
+      font-size: 24px;
+      margin-bottom: 15px;
+      color: white;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    .referral-link-box {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .referral-link {
+      color: #333;
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex-grow: 1;
+      text-align: left;
+      padding: 0 10px;
+    }
+    .copy-btn {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+    .copy-btn:hover {
+      background: #3e8e41;
+    }
+    .referral-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+    .referral-stat {
+      background: rgba(255, 255, 255, 0.2);
+      padding: 15px;
+      border-radius: 10px;
+      width: 120px;
+    }
+    .referral-stat-value {
+      font-size: 28px;
+      font-weight: bold;
+      color: gold;
+    }
+    .referral-stat-label {
+      font-size: 14px;
+      margin-top: 5px;
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Enhanced Header -->
+  <header>
+    <div class="app-title">
+      <i class="fas fa-gamepad"></i>
+      Play & Earn
+      <i class="fas fa-coins"></i>
+    </div>
+  </header>
+
+  <!-- Notice Board -->
+  <div class="notice-board">
+    <span class="notice-text" id="notice-text"></span>
+  </div>
+
+  <!-- Home Page -->
+  <div id="home" class="page active">
+    <div class="balance-display" id="balance">Balance: 0 Coins</div>
+
+    <div class="banner-container">
+      <div class="banner">
+        <div class="banner-item">🎮 Play Quiz and Earn 10 Coins per Correct Answer!</div>
+        <div class="banner-item">🚀 Invite Friends and Earn 20 Coins per Referral!</div>
+        <div class="banner-item">📺 Watch Ads to Boost Your Earnings!</div>
+      </div>
+    </div>
+
+    <div class="welcome-section">
+      <h1 class="welcome-title">Welcome to Play & Earn!</h1>
+      <p class="welcome-subtitle">Play games, complete tasks, and earn real rewards</p>
+    </div>
+
+    <div class="card">
+      <h2>Available Games</h2>
+      <button class="btn" onclick="showPage('quiz')">Play Quiz</button>
+      <button class="btn" onclick="alert('Carrom Coming Soon!')">Play Carrom</button>
+      <button class="btn" onclick="alert('Ludo Coming Soon!')">Play Ludo</button>
+    </div>
+
+    <div class="card">
+      <h2>Complete Tasks & Earn</h2>
+      <button class="btn" onclick="showPage('tasks')">📋 View Tasks</button>
+    </div>
+
+    <div class="card">
+      <h2>Earn More</h2>
+      <button class="btn" onclick="showPage('ads')">📺 Watch Ads & Earn</button>
+    </div>
+
+    <div class="card">
+      <h2>Mini Ad</h2>
+      <button class="btn" onclick="showPage('mini-ad')">📱 View Mini Ad</button>
+    </div>
+  </div>
+
+  <!-- Quiz Game Page -->
+  <div id="quiz" class="page">
+    <div class="card">
+      <h2>Quiz Game</h2>
+      <p><b>Q:</b> What is the capital of Bangladesh?</p>
+      <button class="btn" onclick="quizAnswer(true)">Dhaka</button>
+      <button class="btn" onclick="quizAnswer(false)">Chittagong</button>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+  </div>
+
+  <!-- Tasks Page -->
+  <div id="tasks" class="page">
+    <div class="card">
+      <h2>📋 Complete Tasks & Earn Coins</h2>
+      <p>Complete each task once and earn 5 coins for each!</p>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>Subscribe to our YouTube Channel <span id="task1-status" class="completed-badge" style="display:none">Completed</span></h3>
+          <p>Watch and subscribe to our channel</p>
+        </div>
+        <button class="btn" id="task1-btn" onclick="completeTask(5, 'YouTube Subscribe', 'task1')">Earn <span class="task-reward">5 Coins</span></button>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>Follow our Facebook Page <span id="task2-status" class="completed-badge" style="display:none">Completed</span></h3>
+          <p>Like and follow our Facebook page</p>
+        </div>
+        <button class="btn" id="task2-btn" onclick="completeTask(5, 'Facebook Follow', 'task2')">Earn <span class="task-reward">5 Coins</span></button>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>Like our TikTok Post <span id="task3-status" class="completed-badge" style="display:none">Completed</span></h3>
+          <p>Like our latest post on TikTok</p>
+        </div>
+        <button class="btn" id="task3-btn" onclick="completeTask(5, 'Tiktok Like', 'task3')">Earn <span class="task-reward">5 Coins</span></button>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>Watch a Video <span id="task4-status" class="completed-badge" style="display:none">Completed</span></h3>
+          <p>Watch a video for 30 seconds</p>
+        </div>
+        <button class="btn" id="task4-btn" onclick="completeTask(5, 'Watch Video', 'task4')">Earn <span class="task-reward">5 Coins</span></button>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>Share on Social Media <span id="task5-status" class="completed-badge" style="display:none">Completed</span></h3>
+          <p>Share our app with your friends</p>
+        </div>
+        <button class="btn" id="task5-btn" onclick="completeTask(5, 'Social Share', 'task5')">Earn <span class="task-reward">5 Coins</span></button>
+      </div>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+  </div>
+
+  <!-- Ads Page -->
+  <div id="ads" class="page">
+    <div class="card">
+      <h2>📺 Watch Ads & Earn</h2>
+      <p id="ads-msg">Click the button below to watch an ad and earn 5 coins after 2 minutes.</p>
+      <button class="btn" onclick="watchAd()">▶ Watch Ad</button>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+  </div>
+
+  <!-- Mini Ad Page -->
+  <div id="mini-ad" class="page">
+    <div class="card">
+      <h2>📱 Mini Ad</h2>
+      <p id="mini-ad-msg">Click the button below to view a Telegram ad and earn 5 coins.</p>
+      <button class="btn" onclick="showMiniAd()">▶ View Mini Ad</button>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+  </div>
+
+  <!-- Profile Page -->
+  <div id="profile" class="page">
+    <div class="card">
+      <h2><i class="fas fa-user-circle"></i> My Profile</h2>
+      
+      <div class="profile-stats">
+        <div class="stat-box">
+          <div class="stat-value" id="profile-balance">0</div>
+          <div class="stat-label">Coins</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="completed-tasks">0</div>
+          <div class="stat-label">Tasks Done</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="ads-watched">0</div>
+          <div class="stat-label">Ads Watched</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="mini-ads-watched">0</div>
+          <div class="stat-label">Mini Ads Watched</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="profile-referrals">0</div>
+          <div class="stat-label">Referrals</div>
+        </div>
+      </div>
+      
+      <div style="margin: 20px 0;">
+        <h3>Account Details</h3>
+        <p>Username: <span id="profile-username">User123</span></p>
+        <p>Member since: <span id="join-date">January 2023</span></p>
+      </div>
+
+      <!-- Enhanced Withdraw Section -->
+      <div class="withdraw-section">
+        <h2><i class="fas fa-wallet"></i> Withdraw Coins</h2>
+        <p class="withdraw-msg">Minimum 50,000 Coins (1000 = 1 Taka)</p>
+        <div class="progress-bar-container">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <p class="withdraw-msg" id="progress-text">0% to Minimum Withdrawal</p>
+        <div class="withdraw-inputs">
+          <input type="number" id="withdrawAmount" placeholder="Enter Coins Amount" required>
+          <select id="method" required>
+            <option value="" disabled selected>Select Payment Method</option>
+            <option value="bKash">bKash</option>
+            <option value="Nagad">Nagad</option>
+          </select>
+          <input type="text" id="accountNumber" placeholder="Enter Account Number" required>
+          <button class="btn withdraw-btn" onclick="showWithdrawModal()">Withdraw</button>
+        </div>
+      </div>
+      
+      <div style="margin: 20px 0;">
+        <h3>Settings</h3>
+        <button class="btn" onclick="resetProgress()"><i class="fas fa-trash"></i> Reset Progress</button>
+        <button class="btn" onclick="changeUsername()"><i class="fas fa-edit"></i> Change Username</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Referral Page -->
+  <div id="referral" class="page">
+    <div class="card">
+      <h2><i class="fas fa-user-friends"></i> Refer Friends</h2>
+      <p>Share your referral link with friends and earn 20 coins for each successful referral!</p>
+      
+      <div class="referral-link-box">
+        <span class="referral-link" id="referralLinkPage">https://playearn.com/?ref=</span>
+        <button class="copy-btn" onclick="copyReferralLink()"><i class="fas fa-copy"></i> Copy</button>
+      </div>
+      
+      <div class="referral-stats">
+        <div class="referral-stat">
+          <div class="referral-stat-value" id="referralCountPage">0</div>
+          <div class="referral-stat-label">Total Referrals</div>
+        </div>
+        <div class="referral-stat">
+          <div class="referral-stat-value" id="referralEarningsPage">0</div>
+          <div class="referral-stat-label">Total Earned</div>
+        </div>
+      </div>
+      
+      <h3>Share via:</h3>
+      <div style="margin: 15px 0;">
+        <button class="btn" onclick="shareVia('facebook')"><i class="fab fa-facebook"></i> Facebook</button>
+        <button class="btn" onclick="shareVia('whatsapp')"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+        <button class="btn" onclick="shareVia('telegram')"><i class="fab fa-telegram"></i> Telegram</button>
+      </div>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back to Home</button>
+  </div>
+
+  <!-- Withdraw Confirmation Modal -->
+  <div id="withdrawModal" class="modal">
+    <div class="modal-content">
+      <h3>Confirm Withdrawal</h3>
+      <p id="modal-message"></p>
+      <div class="modal-buttons">
+        <button class="modal-btn confirm" onclick="confirmWithdraw()">Confirm</button>
+        <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <div class="bottom-nav">
+    <a href="#" class="nav-btn active" onclick="showPage('home'); setActiveNav(this); return false;">
+      <i class="fas fa-home"></i>
+      <span>Home</span>
+    </a>
+    <a href="#" class="nav-btn" onclick="showPage('tasks'); setActiveNav(this); return false;">
+      <i class="fas fa-tasks"></i>
+      <span>Tasks</span>
+    </a>
+    <a href="#" class="nav-btn" onclick="showPage('mini-ad'); setActiveNav(this); return false;">
+      <i class="fas fa-ad"></i>
+      <span>Mini Ad</span>
+    </a>
+    <a href="#" class="nav-btn" onclick="showPage('referral'); setActiveNav(this); return false;">
+      <i class="fas fa-user-friends"></i>
+      <span>Refer</span>
+    </a>
+    <a href="#" class="nav-btn" onclick="showPage('profile'); setActiveNav(this); updateProfile(); return false;">
+      <i class="fas fa-user"></i>
+      <span>Profile</span>
+    </a>
+  </div>
+
+  <script>
+    let balance = 0;
+    let adTimer;
+    let completedTasks = {};
+    let adsWatched = 0;
+    let miniAdsWatched = 0;
+    let referralCount = 0;
+    let referralEarnings = 0;
+    let username = "User" + Math.floor(Math.random() * 10000);
+    const joinDate = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+    const userId = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
+    const referralLink = "https://playearn.com/?ref=" + userId;
+
+    // Dynamic Notice Board
+    const notices = [
+      "🎉 New games coming soon! Stay tuned for exciting updates!",
+      "🚀 Earn 20 coins for each friend you refer!",
+      "📢 Complete daily tasks to boost your earnings!",
+      "🎮 Play Quiz and win up to 10 coins per question!",
+      "📱 View Mini Ads on Telegram to earn 5 coins!"
+    ];
+    let currentNoticeIndex = 0;
+
+    function cycleNotices() {
+      const noticeText = document.getElementById("notice-text");
+      noticeText.textContent = notices[currentNoticeIndex];
+      currentNoticeIndex = (currentNoticeIndex + 1) % notices.length;
+      setTimeout(cycleNotices, 25000); // Change notice every 25 seconds to allow full slide animation
+    }
+
+    // Load data from localStorage if available
+    function loadData() {
+      if (localStorage.getItem('balance')) {
+        balance = parseInt(localStorage.getItem('balance'));
+      }
+      if (localStorage.getItem('completedTasks')) {
+        completedTasks = JSON.parse(localStorage.getItem('completedTasks'));
+      }
+      if (localStorage.getItem('adsWatched')) {
+        adsWatched = parseInt(localStorage.getItem('adsWatched'));
+      }
+      if (localStorage.getItem('miniAdsWatched')) {
+        miniAdsWatched = parseInt(localStorage.getItem('miniAdsWatched'));
+      }
+      if (localStorage.getItem('referralCount')) {
+        referralCount = parseInt(localStorage.getItem('referralCount'));
+      }
+      if (localStorage.getItem('referralEarnings')) {
+        referralEarnings = parseInt(localStorage.getItem('referralEarnings'));
+      }
+      if (localStorage.getItem('username')) {
+        username = localStorage.getItem('username');
+      }
+      updateBalance();
+      updateTaskButtons();
+      updateReferralStats();
+      updateProfile();
+      cycleNotices();
+    }
+
+    function updateBalance() {
+      const balanceElement = document.getElementById("balance");
+      balanceElement.textContent = "Balance: " + balance + " Coins";
+      balanceElement.style.animation = 'pulse 0.5s';
+      setTimeout(() => balanceElement.style.animation = 'pulse 2s infinite', 500);
+      localStorage.setItem('balance', balance);
+      updateProgressBar();
+    }
+
+    function updateProgressBar() {
+      const progressBar = document.getElementById("progress-bar");
+      const progressText = document.getElementById("progress-text");
+      const minWithdraw = 50000;
+      const progress = Math.min((balance / minWithdraw) * 100, 100);
+      progressBar.style.width = progress + "%";
+      progressText.textContent = `${progress.toFixed(1)}% to Minimum Withdrawal`;
+    }
+
+    function updateReferralStats() {
+      document.getElementById("referralCountPage").textContent = referralCount;
+      document.getElementById("referralEarningsPage").textContent = referralEarnings;
+      document.getElementById("profile-referrals").textContent = referralCount;
+      document.getElementById("referralLinkPage").textContent = referralLink;
+    }
+
+    function setActiveNav(elm) {
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('active');
+      });
+      elm.classList.add('active');
+    }
+
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      
+      if (id === 'tasks') {
+        updateTaskButtons();
+      }
+      if (id === 'referral') {
+        updateReferralStats();
+      }
+      if (id === 'profile') {
+        updateProfile();
+      }
+    }
+
+    function updateTaskButtons() {
+      for (const task in completedTasks) {
+        if (completedTasks[task]) {
+          const btn = document.getElementById(task + '-btn');
+          const status = document.getElementById(task + '-status');
+          if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = 'Completed';
+          }
+          if (status) {
+            status.style.display = 'inline-block';
+          }
+        }
+      }
+    }
+
+    function quizAnswer(correct) {
+      if (correct) {
+        balance += 10;
+        alert("✅ Correct! You earned 10 Coins");
+      } else {
+        alert("❌ Wrong Answer! Try again");
+      }
+      updateBalance();
+      showPage('home');
+    }
+
+    function completeTask(coins, taskName, taskId) {
+      if (completedTasks[taskId]) {
+        alert("You've already completed this task!");
+        return;
+      }
+      
+      let taskLink;
+      switch(taskName) {
+        case 'YouTube Subscribe':
+          taskLink = 'https://www.youtube.com/@newcartoons99';
+          break;
+        case 'Facebook Follow':
+          taskLink = 'https://www.facebook.com/profile.php?id=61579889304728';
+          break;
+        case 'Tiktok Like':
+          taskLink = 'https://www.tiktok.com/@facebook_creator1?_r=1&_d=eeilj78m1c99bg&sec_uid=MS4wLjABAAAAb1owlqv19XF3j5RQaW25KYsxjmkYg2bazzNXu_e6FXNP32Pl1Vy-U9iSJKma66hF&share_author_id=7410366126566654984&sharer_language=en&source=h5_m&u_code=eg38ia6jcd5d1c&timestamp=1756024192&user_id=7410366126566654984&sec_user_id=MS4wLjABAAAAb1owlqv19XF3j5RQaW25KYsxjmkYg2bazzNXu_e6FXNP32Pl1Vy-U9iSJKma66hF&item_author_type=1&utm_source=copy&utm_campaign=client_share&utm_medium=android&share_iid=7540468340482426631&share_link_id=c5a5d669-5ed8-4a0a-82ab-19ee4c34857b&share_app_id=1233&ugbiz_name=ACCOUNT&ug_btm=b8727%2Cb7360&social_share_type=5&enable_checksum=1';
+          break;
+        case 'Watch Video':
+          taskLink = 'https://www.youtube.com';
+          break;
+        case 'Social Share':
+          taskLink = 'https://www.facebook.com';
+          break;
+        default:
+          taskLink = '#';
+      }
+      
+      window.open(taskLink, '_blank');
+      
+      setTimeout(function() {
+        balance += coins;
+        completedTasks[taskId] = true;
+        localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+        updateBalance();
+        updateTaskButtons();
+        alert("✅ Task completed! You earned " + coins + " coins");
+      }, 2000);
+    }
+
+    // Ad Links
+    const adLinks = [
+      "https://otieu.com/4/9639421",
+      "https://otieu.com/4/8913150",
+      "https://otieu.com/4/9639422",
+      "https://otieu.com/4/8913151"
+    ];
+
+    function watchAd() {
+      let randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+      window.open(randomLink, "_blank");
+
+      document.getElementById("ads-msg").innerText = "⏳ Please wait 2 minutes to earn coins...";
+      
+      clearTimeout(adTimer);
+      adTimer = setTimeout(() => {
+        balance += 5;
+        adsWatched++;
+        localStorage.setItem('adsWatched', adsWatched);
+        updateBalance();
+        document.getElementById("ads-msg").innerText = "✅ You earned 5 Coins! Watch again to earn more.";
+      }, 120000); // 2 minutes
+    }
+
+    function showMiniAd() {
+      if (window.libtl && window.libtl.show) {
+        document.getElementById("mini-ad-msg").innerText = "⏳ Viewing Telegram ad...";
+        window.libtl.show('9765202', () => {
+          balance += 5;
+          miniAdsWatched++;
+          localStorage.setItem('miniAdsWatched', miniAdsWatched);
+          updateBalance();
+          updateProfile();
+          document.getElementById("mini-ad-msg").innerText = "✅ You earned 5 Coins! View another Mini Ad to earn more.";
+        }, () => {
+          document.getElementById("mini-ad-msg").innerText = "❌ Failed to load ad. Try again.";
+        });
+      } else {
+        document.getElementById("mini-ad-msg").innerText = "❌ Ad service unavailable. Try again later.";
+      }
+    }
+
+    function showWithdrawModal() {
+      let amount = parseInt(document.getElementById("withdrawAmount").value);
+      let method = document.getElementById("method").value;
+      let account = document.getElementById("accountNumber").value;
+
+      if (isNaN(amount) || amount <= 0) {
+        alert("Enter valid amount!");
+        return;
+      }
+      if (amount < 50000) {
+        alert("❌ Minimum withdraw is 50,000 Coins");
+        return;
+      }
+      if (amount > balance) {
+        alert("❌ Not enough balance!");
+        return;
+      }
+      if (!method) {
+        alert("Please select a payment method!");
+        return;
+      }
+      if (account.trim() === "") {
+        alert("Please enter account number!");
+        return;
+      }
+
+      const taka = (amount / 1000).toFixed(2);
+      document.getElementById("modal-message").innerText = 
+        `Withdraw ${amount} Coins (${taka} Tk) via ${method} to ${account}?`;
+      document.getElementById("withdrawModal").style.display = "flex";
+    }
+
+    function confirmWithdraw() {
+      let amount = parseInt(document.getElementById("withdrawAmount").value);
+      let method = document.getElementById("method").value;
+      let account = document.getElementById("accountNumber").value;
+
+      balance -= amount;
+      updateBalance();
+
+      let taka = (amount / 1000).toFixed(2);
+      document.getElementById("withdraw-msg").innerText =
+        "✅ Withdraw request submitted: " + amount + " Coins (" + taka + " Tk) via " + method + " to " + account;
+      
+      document.getElementById("withdrawAmount").value = "";
+      document.getElementById("accountNumber").value = "";
+      document.getElementById("method").value = "";
+      closeModal();
+    }
+
+    function closeModal() {
+      document.getElementById("withdrawModal").style.display = "none";
+    }
+
+    function updateProfile() {
+      document.getElementById("profile-balance").textContent = balance;
+      document.getElementById("completed-tasks").textContent = Object.keys(completedTasks).filter(task => completedTasks[task]).length;
+      document.getElementById("ads-watched").textContent = adsWatched;
+      document.getElementById("mini-ads-watched").textContent = miniAdsWatched;
+      document.getElementById("profile-referrals").textContent = referralCount;
+      document.getElementById("profile-username").textContent = username;
+      document.getElementById("join-date").textContent = joinDate;
+      updateProgressBar();
+    }
+    
+    function resetProgress() {
+      if (confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
+        balance = 0;
+        completedTasks = {};
+        adsWatched = 0;
+        miniAdsWatched = 0;
+        referralCount = 0;
+        referralEarnings = 0;
+        
+        localStorage.removeItem('balance');
+        localStorage.removeItem('completedTasks');
+        localStorage.removeItem('adsWatched');
+        localStorage.removeItem('miniAdsWatched');
+        localStorage.removeItem('referralCount');
+        localStorage.removeItem('referralEarnings');
+        
+        updateBalance();
+        updateTaskButtons();
+        updateReferralStats();
+        updateProfile();
+        
+        alert("Progress has been reset!");
+      }
+    }
+    
+    function changeUsername() {
+      const newUsername = prompt("Enter new username:", username);
+      if (newUsername && newUsername.trim() !== "") {
+        username = newUsername.trim();
+        localStorage.setItem('username', username);
+        document.getElementById("profile-username").textContent = username;
+        alert("Username updated!");
+      }
+    }
+    
+    function copyReferralLink() {
+      navigator.clipboard.writeText(referralLink).then(() => {
+        alert("Referral link copied to clipboard!");
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = referralLink;
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        document.execCommand("copy");
+        document.body.removeChild(tempTextArea);
+        alert("Referral link copied to clipboard!");
+      });
+    }
+    
+    function shareVia(platform) {
+      let shareUrl = "";
+      const text = "Join Play & Earn to play games and earn real money! Use my referral link: ";
+      
+      switch(platform) {
+        case 'facebook':
+          shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(referralLink)}`;
+          break;
+        case 'whatsapp':
+          shareUrl = `https://wa.me/?text=${encodeURIComponent(text + referralLink)}`;
+          break;
+        case 'telegram':
+          shareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralLink)}&text=${encodeURIComponent(text)}`;
+          break;
+        default:
+          return;
+      }
+      
+      window.open(shareUrl, '_blank');
+    }
+    
+    function simulateReferral() {
+      referralCount++;
+      referralEarnings += 20;
+      balance += 20;
+      
+      localStorage.setItem('referralCount', referralCount);
+      localStorage.setItem('referralEarnings', referralEarnings);
+      
+      updateBalance();
+      updateReferralStats();
+      alert("🎉 You earned 20 coins from a referral!");
+    }
+    
+    // Initialize the page
+    loadData();
+  </script>
+
+</body>
+</html>
