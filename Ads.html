@@ -177,7 +177,7 @@
       font-size: 12px;
       margin-left: 5px;
     }
-
+    
     /* Bottom Navigation */
     .bottom-nav {
       position: fixed;
@@ -214,7 +214,7 @@
     .nav-btn:hover {
       background: rgba(255, 255, 255, 0.1);
     }
-
+    
     /* Profile Page Styles */
     .profile-stats {
       display: flex;
@@ -242,7 +242,7 @@
       font-size: 12px;
       margin-top: 5px;
     }
-
+    
     /* Enhanced Withdraw Section */
     .withdraw-section {
       background: linear-gradient(135deg, #1e3c72, #2a5298);
@@ -498,22 +498,6 @@
       font-size: 14px;
       margin-top: 5px;
     }
-
-    /* Loading Spinner */
-    .spinner {
-      display: none;
-      border: 4px solid rgba(255, 255, 255, 0.3);
-      border-top: 4px solid gold;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      animation: spin 1s linear infinite;
-      margin: 10px auto;
-    }
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -541,7 +525,7 @@
       <div class="banner">
         <div class="banner-item">🎮 Play Quiz and Earn 10 Coins per Correct Answer!</div>
         <div class="banner-item">🚀 Invite Friends and Earn 20 Coins per Referral!</div>
-        <div class="banner-item">📱 View Mini Ads to Earn 100 Coins!</div>
+        <div class="banner-item">📺 Watch Ads to Boost Your Earnings!</div>
       </div>
     </div>
 
@@ -560,6 +544,11 @@
     <div class="card">
       <h2>Complete Tasks & Earn</h2>
       <button class="btn" onclick="showPage('tasks')">📋 View Tasks</button>
+    </div>
+
+    <div class="card">
+      <h2>Earn More</h2>
+      <button class="btn" onclick="showPage('ads')">📺 Watch Ads & Earn</button>
     </div>
 
     <div class="card">
@@ -628,13 +617,22 @@
     <button class="btn" onclick="showPage('home')">🏠 Back</button>
   </div>
 
+  <!-- Ads Page -->
+  <div id="ads" class="page">
+    <div class="card">
+      <h2>📺 Watch Ads & Earn</h2>
+      <p id="ads-msg">Click the button below to watch an ad and earn 5 coins after 2 minutes.</p>
+      <button class="btn" onclick="watchAd()">▶ Watch Ad</button>
+    </div>
+    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+  </div>
+
   <!-- Mini Ad Page -->
   <div id="mini-ad" class="page">
     <div class="card">
       <h2>📱 Mini Ad</h2>
-      <p id="mini-ad-msg">Click below to view a Telegram Mini Ad and earn 100 coins!</p>
-      <div class="spinner" id="ad-spinner"></div>
-      <button class="btn" id="mini-ad-btn" onclick="showMiniAd()">▶ View Mini Ad</button>
+      <p id="mini-ad-msg">Click the button below to view a Telegram ad and earn 5 coins.</p>
+      <button class="btn" onclick="showMiniAd()">▶ View Mini Ad</button>
     </div>
     <button class="btn" onclick="showPage('home')">🏠 Back</button>
   </div>
@@ -652,6 +650,10 @@
         <div class="stat-box">
           <div class="stat-value" id="completed-tasks">0</div>
           <div class="stat-label">Tasks Done</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-value" id="ads-watched">0</div>
+          <div class="stat-label">Ads Watched</div>
         </div>
         <div class="stat-box">
           <div class="stat-value" id="mini-ads-watched">0</div>
@@ -767,14 +769,16 @@
 
   <script>
     let balance = 0;
+    let adTimer;
     let completedTasks = {};
+    let adsWatched = 0;
     let miniAdsWatched = 0;
     let referralCount = 0;
     let referralEarnings = 0;
     let username = "User" + Math.floor(Math.random() * 10000);
     const joinDate = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
     const userId = Math.random().toString(36).substring(2, 10) + Math.random().toString(36).substring(2, 10);
-    const referralLink = `https://t.me/newplayearn_bot?start=${userId}`;
+    const referralLink = `https://t.me/newplayearn_bot?start=${userId}`; // পরিবর্তিত রেফারেল লিঙ্ক
 
     // Dynamic Notice Board
     const notices = [
@@ -782,7 +786,7 @@
       "🚀 Earn 20 coins for each friend you refer!",
       "📢 Complete daily tasks to boost your earnings!",
       "🎮 Play Quiz and win up to 10 coins per question!",
-      "📱 View Mini Ads on Telegram to earn 100 coins!"
+      "📱 View Mini Ads on Telegram to earn 5 coins!"
     ];
     let currentNoticeIndex = 0;
 
@@ -790,16 +794,19 @@
       const noticeText = document.getElementById("notice-text");
       noticeText.textContent = notices[currentNoticeIndex];
       currentNoticeIndex = (currentNoticeIndex + 1) % notices.length;
-      setTimeout(cycleNotices, 25000); // Change notice every 25 seconds
+      setTimeout(cycleNotices, 25000); // Change notice every 25 seconds to allow full slide animation
     }
 
-    // Load data from localStorage
+    // Load data from localStorage if available
     function loadData() {
       if (localStorage.getItem('balance')) {
         balance = parseInt(localStorage.getItem('balance'));
       }
       if (localStorage.getItem('completedTasks')) {
         completedTasks = JSON.parse(localStorage.getItem('completedTasks'));
+      }
+      if (localStorage.getItem('adsWatched')) {
+        adsWatched = parseInt(localStorage.getItem('adsWatched'));
       }
       if (localStorage.getItem('miniAdsWatched')) {
         miniAdsWatched = parseInt(localStorage.getItem('miniAdsWatched'));
@@ -933,40 +940,45 @@
       }, 2000);
     }
 
+    // Ad Links
+    const adLinks = [
+      "https://otieu.com/4/9639421",
+      "https://otieu.com/4/8913150",
+      "https://otieu.com/4/9639422",
+      "https://otieu.com/4/8913151"
+    ];
+
+    function watchAd() {
+      let randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
+      window.open(randomLink, "_blank");
+
+      document.getElementById("ads-msg").innerText = "⏳ Please wait 2 minutes to earn coins...";
+      
+      clearTimeout(adTimer);
+      adTimer = setTimeout(() => {
+        balance += 5;
+        adsWatched++;
+        localStorage.setItem('adsWatched', adsWatched);
+        updateBalance();
+        document.getElementById("ads-msg").innerText = "✅ You earned 5 Coins! Watch again to earn more.";
+      }, 120000); // 2 minutes
+    }
+
     function showMiniAd() {
-      const adMsg = document.getElementById("mini-ad-msg");
-      const adButton = document.getElementById("mini-ad-btn");
-      const spinner = document.getElementById("ad-spinner");
-
-      adMsg.innerText = "⏳ Loading Mini Ad...";
-      adButton.disabled = true;
-      spinner.style.display = "block";
-
       if (window.libtl && window.libtl.show) {
+        document.getElementById("mini-ad-msg").innerText = "⏳ Viewing Telegram ad...";
         window.libtl.show('9765202', () => {
-          balance += 100; // Updated to add 100 coins
+          balance += 5;
           miniAdsWatched++;
           localStorage.setItem('miniAdsWatched', miniAdsWatched);
           updateBalance();
           updateProfile();
-          adMsg.innerText = "✅ You earned 100 Coins! View another Mini Ad to earn more.";
-          adButton.disabled = false;
-          spinner.style.display = "none";
-          
-          // Cooldown timer for 30 seconds
-          setTimeout(() => {
-            adButton.disabled = false;
-            adMsg.innerText = "Click below to view a Telegram Mini Ad and earn 100 coins!";
-          }, 30000);
+          document.getElementById("mini-ad-msg").innerText = "✅ You earned 5 Coins! View another Mini Ad to earn more.";
         }, () => {
-          adMsg.innerText = "❌ Failed to load ad. Please try again.";
-          adButton.disabled = false;
-          spinner.style.display = "none";
+          document.getElementById("mini-ad-msg").innerText = "❌ Failed to load ad. Try again.";
         });
       } else {
-        adMsg.innerText = "❌ Ad service unavailable. Please try again later.";
-        adButton.disabled = false;
-        spinner.style.display = "none";
+        document.getElementById("mini-ad-msg").innerText = "❌ Ad service unavailable. Try again later.";
       }
     }
 
@@ -1027,6 +1039,7 @@
     function updateProfile() {
       document.getElementById("profile-balance").textContent = balance;
       document.getElementById("completed-tasks").textContent = Object.keys(completedTasks).filter(task => completedTasks[task]).length;
+      document.getElementById("ads-watched").textContent = adsWatched;
       document.getElementById("mini-ads-watched").textContent = miniAdsWatched;
       document.getElementById("profile-referrals").textContent = referralCount;
       document.getElementById("profile-username").textContent = username;
@@ -1038,12 +1051,14 @@
       if (confirm("Are you sure you want to reset all progress? This cannot be undone.")) {
         balance = 0;
         completedTasks = {};
+        adsWatched = 0;
         miniAdsWatched = 0;
         referralCount = 0;
         referralEarnings = 0;
         
         localStorage.removeItem('balance');
         localStorage.removeItem('completedTasks');
+        localStorage.removeItem('adsWatched');
         localStorage.removeItem('miniAdsWatched');
         localStorage.removeItem('referralCount');
         localStorage.removeItem('referralEarnings');
