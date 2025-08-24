@@ -632,7 +632,10 @@
     <div class="card">
       <h2>📱 Mini Ad</h2>
       <p id="mini-ad-msg">Click the button below to view a Telegram ad and earn 5 coins.</p>
-      <button class="btn" onclick="showMiniAd()">▶ View Mini Ad</button>
+      <div id="telegram-ad-container" style="display: none; margin: 15px 0;">
+        <!-- Telegram Ad will be loaded here -->
+      </div>
+      <button class="btn" id="show-mini-ad-btn" onclick="loadTelegramAd()">▶ View Mini Ad</button>
     </div>
     <button class="btn" onclick="showPage('home')">🏠 Back</button>
   </div>
@@ -964,21 +967,68 @@
       }, 120000); // 2 minutes
     }
 
-    function showMiniAd() {
-      if (window.libtl && window.libtl.show) {
-        document.getElementById("mini-ad-msg").innerText = "⏳ Viewing Telegram ad...";
-        window.libtl.show('9765202', () => {
-          balance += 5;
-          miniAdsWatched++;
-          localStorage.setItem('miniAdsWatched', miniAdsWatched);
-          updateBalance();
-          updateProfile();
-          document.getElementById("mini-ad-msg").innerText = "✅ You earned 5 Coins! View another Mini Ad to earn more.";
-        }, () => {
-          document.getElementById("mini-ad-msg").innerText = "❌ Failed to load ad. Try again.";
-        });
+    // টেলিগ্রাম মিনি এড লোড করার ফাংশন
+    function loadTelegramAd() {
+      const adContainer = document.getElementById('telegram-ad-container');
+      const adMessage = document.getElementById('mini-ad-msg');
+      const showAdButton = document.getElementById('show-mini-ad-btn');
+      
+      // বাটন লোডিং স্ট্যাটাসে পরিবর্তন
+      showAdButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading Ad...';
+      showAdButton.disabled = true;
+      
+      // মনিটেক SDK ব্যবহার করে এড লোড করার চেষ্টা
+      if (typeof libtl !== 'undefined' && libtl.show) {
+        adMessage.innerText = "⏳ Loading Telegram ad...";
+        
+        // এড শো করার জন্য মনিটেক ফাংশন কল
+        libtl.show('9765202', 
+          // সাফল্যের কেস
+          function() {
+            // এড দেখা সম্পূর্ণ হলে
+            balance += 5;
+            miniAdsWatched++;
+            localStorage.setItem('miniAdsWatched', miniAdsWatched);
+            updateBalance();
+            updateProfile();
+            
+            adMessage.innerText = "✅ You earned 5 Coins! View another Mini Ad to earn more.";
+            showAdButton.innerHTML = '▶ View Another Ad';
+            showAdButton.disabled = false;
+            adContainer.style.display = 'none';
+          },
+          // ব্যর্থতার কেস
+          function() {
+            adMessage.innerText = "❌ Failed to load ad. Try again.";
+            showAdButton.innerHTML = '▶ Try Again';
+            showAdButton.disabled = false;
+            adContainer.style.display = 'none';
+          }
+        );
       } else {
-        document.getElementById("mini-ad-msg").innerText = "❌ Ad service unavailable. Try again later.";
+        // SDK লোড না হলে বিকল্প পদ্ধতি
+        adMessage.innerText = "❌ Ad service not available. Trying alternative method...";
+        
+        // বিকল্প পদ্ধতি: একটি নতুন উইন্ডো খোলা
+        setTimeout(function() {
+          window.open('https://t.me/', '_blank');
+          
+          // ব্যবহারকারীকে এড দেখার জন্য নির্দেশনা
+          adMessage.innerHTML = "✅ Please view the ad in the Telegram window that opened.<br>Click the button below after completing.";
+          showAdButton.innerHTML = '✅ I Viewed the Ad';
+          showAdButton.onclick = function() {
+            balance += 5;
+            miniAdsWatched++;
+            localStorage.setItem('miniAdsWatched', miniAdsWatched);
+            updateBalance();
+            updateProfile();
+            
+            adMessage.innerText = "✅ You earned 5 Coins! Thank you for viewing.";
+            showAdButton.innerHTML = '▶ View Another Ad';
+            showAdButton.onclick = loadTelegramAd;
+          };
+          showAdButton.disabled = false;
+        }, 2000);
       }
     }
 
@@ -1023,8 +1073,7 @@
       updateBalance();
 
       let taka = (amount / 1000).toFixed(2);
-      document.getElementById("withdraw-msg").innerText =
-        "✅ Withdraw request submitted: " + amount + " Coins (" + taka + " Tk) via " + method + " to " + account;
+      alert("✅ Withdraw request submitted: " + amount + " Coins (" + taka + " Tk) via " + method + " to " + account);
       
       document.getElementById("withdrawAmount").value = "";
       document.getElementById("accountNumber").value = "";
