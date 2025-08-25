@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Play & Earn</title>
-  <script src='//libtl.com/sdk.js' data-zone='9765202' data-sdk='show_9765202'></script>
   <style>
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -478,28 +477,30 @@
     .copy-btn:hover {
       background: #3e8e41;
     }
-    .referral-stats {
-      display: flex;
-      justify-content: space-around;
-      margin: 20px 0;
-    }
-    .referral-stat {
-      background: rgba(255, 255, 255, 0.2);
+    
+    /* Mini Ad Instructions */
+    .instructions {
+      margin-top: 20px;
       padding: 15px;
+      background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
-      width: 120px;
+      text-align: left;
     }
-    .referral-stat-value {
-      font-size: 28px;
-      font-weight: bold;
+    .instructions h3 {
       color: gold;
+      margin-bottom: 10px;
     }
-    .referral-stat-label {
-      font-size: 14px;
-      margin-top: 5px;
+    .instructions ol {
+      padding-left: 20px;
+    }
+    .instructions li {
+      margin-bottom: 8px;
+      line-height: 1.4;
     }
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MiniTec Library for Telegram Ads -->
+  <script src="https://cdn.miniteck.com/js/lib.min.js"></script>
 </head>
 <body>
 
@@ -523,8 +524,8 @@
 
     <div class="banner-container">
       <div class="banner">
-        <div class="banner-item">🎮 Play Quiz and Earn 10 Coins per Correct Answer!</div>
-        <div class="banner-item">🚀 Invite Friends and Earn 20 Coins per Referral!</div>
+        <div class="banner-item">🎮 Play Quiz and Earn 0 Coins per Correct Answer!</div>
+        <div class="banner-item">🚀 Invite Friends and Earn 0 Coins per Referral!</div>
         <div class="banner-item">📺 Watch Ads to Boost Your Earnings!</div>
       </div>
     </div>
@@ -536,7 +537,7 @@
 
     <div class="card">
       <h2>Available Games</h2>
-      <button class="btn" onclick="showPage('quiz')">Play Quiz</button>
+      <button class="btn" onclick="alert('Quiz Coming Soon!')">Play Quiz</button>
       <button class="btn" onclick="alert('Carrom Coming Soon!')">Play Carrom</button>
       <button class="btn" onclick="alert('Ludo Coming Soon!')">Play Ludo</button>
     </div>
@@ -555,17 +556,6 @@
       <h2>Mini Ad</h2>
       <button class="btn" onclick="showPage('mini-ad')">📱 View Mini Ad</button>
     </div>
-  </div>
-
-  <!-- Quiz Game Page -->
-  <div id="quiz" class="page">
-    <div class="card">
-      <h2>Quiz Game</h2>
-      <p><b>Q:</b> What is the capital of Bangladesh?</p>
-      <button class="btn" onclick="quizAnswer(true)">Dhaka</button>
-      <button class="btn" onclick="quizAnswer(false)">Chittagong</button>
-    </div>
-    <button class="btn" onclick="showPage('home')">🏠 Back</button>
   </div>
 
   <!-- Tasks Page -->
@@ -621,8 +611,8 @@
   <div id="ads" class="page">
     <div class="card">
       <h2>📺 Watch Ads & Earn</h2>
-      <p id="ads-msg">Click the button below to watch an ad and earn 5 coins after 2 minutes.</p>
-      <button class="btn" onclick="watchAd()">▶ Watch Ad</button>
+      <p id="ads-msg">Click the button below to watch an ad and earn 5 coins after visiting the website.</p>
+      <button class="btn" id="watch-ad-btn" onclick="watchAd()">▶ Watch Ad</button>
     </div>
     <button class="btn" onclick="showPage('home')">🏠 Back</button>
   </div>
@@ -630,11 +620,20 @@
   <!-- Mini Ad Page -->
   <div id="mini-ad" class="page">
     <div class="card">
-      <h2>📱 Mini Ad</h2>
-      <p id="mini-ad-msg">Click the button below to view a Telegram ad and earn 5 coins.</p>
-      <button class="btn" onclick="showMiniAd()">▶ View Mini Ad</button>
+      <h2>📱 টেলিগ্রাম মিনি এড</h2>
+      <p id="mini-ad-msg">নিচের বাটনে ক্লিক করে টেলিগ্রাম মিনি এড দেখুন এবং 100 কয়েন অর্জন করুন।</p>
+      <button class="btn" onclick="showMiniAd()">▶ টেলিগ্রাম এড দেখুন</button>
+      
+      <div class="instructions">
+        <h3>মিনি এড দেখার নিয়ম</h3>
+        <ol>
+          <li>বাটনে ক্লিক করুন</li>
+          <li>টেলিগ্রামে এড দেখুন</li>
+          <li>এড দেখার পর স্বয়ংক্রিয়ভাবে 100 কয়েন পেয়ে যাবেন</li>
+        </ol>
+      </div>
     </div>
-    <button class="btn" onclick="showPage('home')">🏠 Back</button>
+    <button class="btn" onclick="showPage('home')">🏠 হোমে ফিরে যান</button>
   </div>
 
   <!-- Profile Page -->
@@ -674,7 +673,7 @@
       <!-- Enhanced Withdraw Section -->
       <div class="withdraw-section">
         <h2><i class="fas fa-wallet"></i> Withdraw Coins</h2>
-        <p class="withdraw-msg">Minimum 50,000 Coins (1000 = 1 Taka)</p>
+        <p class="withdraw-msg">Minimum 50,000 Coins (10000 = 10 Taka)</p>
         <div class="progress-bar-container">
           <div class="progress-bar" id="progress-bar"></div>
         </div>
@@ -703,7 +702,7 @@
   <div id="referral" class="page">
     <div class="card">
       <h2><i class="fas fa-user-friends"></i> Refer Friends</h2>
-      <p>Share your referral link with friends and earn 20 coins for each successful referral!</p>
+      <p>Share your referral link with friends and earn 0 coins for each successful referral!</p>
       
       <div class="referral-link-box">
         <span class="referral-link" id="referralLinkPage">https://t.me/newplayearn_bot</span>
@@ -783,10 +782,10 @@
     // Dynamic Notice Board
     const notices = [
       "🎉 New games coming soon! Stay tuned for exciting updates!",
-      "🚀 Earn 20 coins for each friend you refer!",
+      "🚀 Earn 10% coins for each friend you refer!",
       "📢 Complete daily tasks to boost your earnings!",
       "🎮 Play Quiz and win up to 10 coins per question!",
-      "📱 View Mini Ads on Telegram to earn 5 coins!"
+      "📱 View Mini Ads on Telegram to earn 100 coins!"
     ];
     let currentNoticeIndex = 0;
 
@@ -890,16 +889,6 @@
       }
     }
 
-    function quizAnswer(correct) {
-      if (correct) {
-        balance += 10;
-        alert("✅ Correct! You earned 10 Coins");
-      } else {
-        alert("❌ Wrong Answer! Try again");
-      }
-      updateBalance();
-      showPage('home');
-    }
 
     function completeTask(coins, taskName, taskId) {
       if (completedTasks[taskId]) {
@@ -921,8 +910,8 @@
         case 'Watch Video':
           taskLink = 'https://www.youtube.com';
           break;
-        case 'Social Share':
-          taskLink = 'https://www.facebook.com';
+        case 'Telegram Channel':
+          taskLink = 'https://t.me/+4UySBc8UqWllMGY9';
           break;
         default:
           taskLink = '#';
@@ -948,37 +937,64 @@
       "https://otieu.com/4/8913151"
     ];
 
+    // Track last ad watch time
+    let lastAdWatchTime = 0;
+    const AD_COOLDOWN = 30000; // 30 seconds in milliseconds
+
     function watchAd() {
+      const currentTime = new Date().getTime();
+      const timeSinceLastAd = currentTime - lastAdWatchTime;
+      
+      // Check if 30 seconds have passed since last ad
+      if (timeSinceLastAd < AD_COOLDOWN) {
+        const remainingTime = Math.ceil((AD_COOLDOWN - timeSinceLastAd) / 1000);
+        alert(`Please wait ${remainingTime} seconds before watching another ad.`);
+        return;
+      }
+      
       let randomLink = adLinks[Math.floor(Math.random() * adLinks.length)];
       window.open(randomLink, "_blank");
 
-      document.getElementById("ads-msg").innerText = "⏳ Please wait 2 minutes to earn coins...";
+      document.getElementById("ads-msg").innerText = "⏳ Please visit the website to earn coins...";
       
-      clearTimeout(adTimer);
-      adTimer = setTimeout(() => {
-        balance += 5;
-        adsWatched++;
-        localStorage.setItem('adsWatched', adsWatched);
-        updateBalance();
-        document.getElementById("ads-msg").innerText = "✅ You earned 5 Coins! Watch again to earn more.";
-      }, 120000); // 2 minutes
+      // Update last watch time
+      lastAdWatchTime = currentTime;
+      localStorage.setItem('lastAdWatchTime', lastAdWatchTime);
+      
+      // Disable button temporarily
+      const watchBtn = document.getElementById("watch-ad-btn");
+      watchBtn.disabled = true;
+      watchBtn.innerText = "Please wait...";
+      
+      // Enable button after cooldown
+      setTimeout(() => {
+        watchBtn.disabled = false;
+        watchBtn.innerText = "▶ Watch Ad";
+        document.getElementById("ads-msg").innerText = "✅ You can watch another ad now!";
+      }, AD_COOLDOWN);
+      
+      // Add coins immediately after visiting the website
+      balance += 5;
+      adsWatched++;
+      localStorage.setItem('adsWatched', adsWatched);
+      updateBalance();
     }
 
     function showMiniAd() {
       if (window.libtl && window.libtl.show) {
-        document.getElementById("mini-ad-msg").innerText = "⏳ Viewing Telegram ad...";
-        window.libtl.show('9765202', () => {
-          balance += 5;
+        document.getElementById("mini-ad-msg").innerText = "⏳ টেলিগ্রাম মিনি এড লোড হচ্ছে...";
+        window.libtl.show('9766305', () => {
+          balance += 100;
           miniAdsWatched++;
           localStorage.setItem('miniAdsWatched', miniAdsWatched);
           updateBalance();
           updateProfile();
-          document.getElementById("mini-ad-msg").innerText = "✅ You earned 5 Coins! View another Mini Ad to earn more.";
+          document.getElementById("mini-ad-msg").innerText = "✅ আপনি 100 কয়েন অর্জন করেছেন! আরও কয়েন অর্জনের জন্য আরেকটি মিনি এড দেখুন।";
         }, () => {
-          document.getElementById("mini-ad-msg").innerText = "❌ Failed to load ad. Try again.";
+          document.getElementById("mini-ad-msg").innerText = "❌ এড লোড করতে ব্যর্থ হয়েছে। পরে আবার চেষ্টা করুন।";
         });
       } else {
-        document.getElementById("mini-ad-msg").innerText = "❌ Ad service unavailable. Try again later.";
+        document.getElementById("mini-ad-msg").innerText = "❌ এড পরিষেবা এখন উপলব্ধ নেই। পরে আবার চেষ্টা করুন।";
       }
     }
 
@@ -1120,19 +1136,24 @@
     
     function simulateReferral() {
       referralCount++;
-      referralEarnings += 20;
-      balance += 20;
+      referralEarnings += 0;
+      balance += 0;
       
       localStorage.setItem('referralCount', referralCount);
       localStorage.setItem('referralEarnings', referralEarnings);
       
       updateBalance();
       updateReferralStats();
-      alert("🎉 You earned 20 coins from a referral!");
+      alert("🎉 You earned 0 coins from a referral!");
     }
     
     // Initialize the page
     loadData();
+    
+    // Load last ad watch time from localStorage
+    if (localStorage.getItem('lastAdWatchTime')) {
+      lastAdWatchTime = parseInt(localStorage.getItem('lastAdWatchTime'));
+    }
   </script>
 
 </body>
